@@ -6,12 +6,9 @@
   </div>
   <pop-up
     v-if="isPopUpVisible"
-    :popUpTitle="selectedContry.title"
+    :popUpContent="popUpObject"
     @closePopUp="closePopUpWindow"
-  >
-    <h2>{{ selectedContry.title }}</h2>
-    <p>{{ selectedContry.mapId }}</p>
-  </pop-up>
+  />
 </template>
 
 <script>
@@ -27,14 +24,18 @@ export default {
   data() {
     return {
       isPopUpVisible: false,
-      selectedContry: {},
+      popUpObject: {
+        title: "",
+        button: "Ok",
+        content: {},
+      },
     };
   },
   methods: {
     onMapClick(attr) {
       this.isPopUpVisible = true;
-      this.selectedContry = attr;
-      //alert(`You cliked at ${attr.mapId}: ${attr.title}`);
+      this.popUpObject.title = attr.title;
+      this.popUpObject.content = attr;
     },
     closePopUpWindow() {
       this.isPopUpVisible = false;

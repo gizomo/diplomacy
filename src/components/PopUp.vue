@@ -2,14 +2,20 @@
   <div class="popup-wrapper" ref="popup_wrapper">
     <div class="popup">
       <div class="popup__header">
-        <span>{{ popUpTitle }}</span>
+        <span>{{ popUpContent.title }}</span>
+        <img
+          class="flag"
+          v-if="popUpContent.content.mapId"
+          :src="require('../assets/flags/' + popUpContent.content.mapId + '.svg')"
+          :alt="popUpContent.title"
+        />
         <span class="popup__close" @click="closePopUp">Close</span>
       </div>
       <div class="popup__content">
         <slot></slot>
       </div>
       <div class="popup__footer">
-        <button class="popup__footer-button">Button</button>
+        <button class="popup__footer-button">{{ popUpContent.button }}</button>
       </div>
     </div>
   </div>
@@ -19,9 +25,15 @@
 export default {
   name: "PopUp",
   props: {
-    popUpTitle: {
-      type: String,
-      default: "PopUp Title",
+    popUpContent: {
+      type: Object,
+      default() {
+        return {
+          title: "PopUp",
+          button: "Ok",
+          content: {},
+        };
+      },
     },
   },
   data() {
@@ -34,11 +46,11 @@ export default {
   },
   mounted() {
     const vm = this;
-    document.addEventListener('click', function(item) {
-      if(item.target === vm.$refs['popup_wrapper']) {
+    document.addEventListener("click", function (item) {
+      if (item.target === vm.$refs["popup_wrapper"]) {
         vm.closePopUp();
       }
-    })
+    });
   },
 };
 </script>
@@ -75,5 +87,8 @@ export default {
 .popup__close:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+.flag {
+  width: 6rem;
 }
 </style>
