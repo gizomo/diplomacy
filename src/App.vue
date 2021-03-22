@@ -1,26 +1,22 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <h1>World Map</h1>
+  <div>
+    <world-map @map-clicked="onMapClick"></world-map>
+  </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import WorldMap from "./components/WorldMap";
 
 export default {
   name: "App",
   components: {
-    HelloWorld,
+    WorldMap,
   },
+  methods: {
+    onMapClick: function (attr) {
+      alert(`You cliked at ${attr.mapId}: ${attr.title}`);
+    }
+  }
 };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
