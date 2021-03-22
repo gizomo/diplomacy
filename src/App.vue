@@ -4,7 +4,11 @@
       <world-map @map-clicked="onMapClick"></world-map>
     </div>
   </div>
-  <pop-up v-if="isPopUpVisible" @closePopUp="closePopUpWindow">
+  <pop-up
+    v-if="isPopUpVisible"
+    :popUpTitle="selectedContry.title"
+    @closePopUp="closePopUpWindow"
+  >
     <h2>{{ selectedContry.title }}</h2>
     <p>{{ selectedContry.mapId }}</p>
   </pop-up>
