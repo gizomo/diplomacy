@@ -1,12 +1,30 @@
 <template>
   <div :id="svgId" class="svg-container"></div>
+  <pop-up v-if="isPopUpVisible" @closePopUp="closePopUpWindow">
+    <template #header>
+      <img
+        class="flag"
+        v-if="popUpObject.mapId"
+        :src="require('../assets/flags/' + popUpObject.mapId + '.svg')"
+        :alt="popUpObject.title"
+      />
+    </template>
+    <template #content>
+      <h1>{{ popUpObject.title }}</h1>
+    </template>
+    <template #footer></template>
+  </pop-up>
 </template>
 
 <script>
 import WorldMapData from "../assets/worldRussiaCrimeaLow";
+import PopUp from "./PopUp";
 
 export default {
   name: "WorldMap",
+  components: {
+    PopUp,
+  },
   data() {
     return {
       svgId: "worldMap",
@@ -17,13 +35,19 @@ export default {
         viewBoxHeight: 680,
       },
       svgContainer: null,
+
+      isPopUpVisible: false,
+      popUpObject: {
+        title: String,
+        mapId: String,
+      },
     };
   },
   mounted() {
     this.generateMap();
   },
   methods: {
-    generateMap: function () {
+    generateMap() {
       const mapData = WorldMapData.g.path;
       const svgContainer = this.$svg("worldMap")
         .size(this.mapAttr.svgWitdh, this.mapAttr.svgHeight)
@@ -33,7 +57,7 @@ export default {
         this.generatePath(svgContainer, pathObj);
       });
     },
-    generatePath: function (svgCont, pathObj) {
+    generatePath(svgCont, pathObj) {
       const vm = this;
       const attrs = {
         fill: "#fff",
@@ -44,10 +68,13 @@ export default {
       };
       const element = svgCont.path(pathObj["d"]).attr(attrs);
       element.click(function () {
-        const mapId = this.node.attributes["mapId"].value;
-        const title = this.node.attributes["title"].value;
-        vm.$emit("mapClicked", { mapId, title });
+        vm.popUpObject.title = this.node.attributes["title"].value;
+        vm.popUpObject.mapId = this.node.attributes["mapId"].value;
+        vm.isPopUpVisible = true;
       });
+    },
+    closePopUpWindow() {
+      this.isPopUpVisible = false;
     },
   },
 };
@@ -61,5 +88,8 @@ export default {
   background-color: #abcdef;
   border: 1px solid #2e2e2e;
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(128, 128, 128, 0.5);
+}
+.flag {
+  width: 6rem;
 }
 </style>
