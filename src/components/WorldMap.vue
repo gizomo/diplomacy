@@ -72,6 +72,12 @@ export default {
         vm.popUpObject.mapId = this.node.attributes["mapId"].value;
         vm.isPopUpVisible = true;
       });
+      element.mouseover(function () {
+        this.node.attributes["fill"].value = "#e2e2e2";
+      });
+      element.mouseout(function () {
+        this.node.attributes["fill"].value = "#fff";
+      });
     },
     closePopUpWindow() {
       this.isPopUpVisible = false;

@@ -67,6 +67,7 @@ export default {
   bottom: 0;
   right: 0;
   left: 0;
+  height: 100vh;
   background-color: rgba(64, 64, 64, 0.4);
 }
 .popup {
