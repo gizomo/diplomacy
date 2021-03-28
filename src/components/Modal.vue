@@ -1,18 +1,18 @@
 <template>
-  <div class="popup-wrapper" ref="popup_wrapper">
-    <div class="popup">
-      <div class="popup-header">
-        <div class="popup-title"><slot name="header"></slot></div>
-        <span class="popup-close" @click="closePopUp">
+  <div class="modal-wrapper" ref="modal_wrapper">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title"><slot name="header"></slot></div>
+        <span class="modal-close" @click="closeModal">
           <i class="material-icons">close</i>
         </span>
       </div>
-      <div class="popup-content">
+      <div class="modal-content">
         <slot name="content"></slot>
       </div>
-      <div class="popup-footer">
+      <div class="modal-footer">
         <slot name="footer">
-          <button class="popup-footer-button" @click="closePopUp">
+          <button class="modal-footer-button" @click="closeModal">
             Продолжить
           </button>
         </slot>
@@ -23,13 +23,13 @@
 
 <script>
 export default {
-  name: "PopUp",
+  name: "Modal",
   props: {
-    popUpContent: {
+    modalContent: {
       type: Object,
       default() {
         return {
-          title: "PopUp",
+          title: "Модальное окно",
           button: "Ok",
           content: {},
         };
@@ -40,17 +40,17 @@ export default {
     return {};
   },
   methods: {
-    closePopUp() {
+    closeModal() {
       document.body.style.overflow = null;
-      this.$emit("closePopUp");
+      this.$emit("closeModal");
     },
   },
   mounted() {
     const vm = this;
     document.body.style.overflow = "hidden";
     document.addEventListener("click", function (item) {
-      if (item.target === vm.$refs["popup_wrapper"]) {
-        vm.closePopUp();
+      if (item.target === vm.$refs["modal_wrapper"]) {
+        vm.closeModal();
       }
     });
   },
@@ -58,7 +58,7 @@ export default {
 </script>
 
 <style scoped>
-.popup-wrapper {
+.modal-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,7 +70,7 @@ export default {
   height: 100vh;
   background-color: rgba(64, 64, 64, 0.4);
 }
-.popup {
+.modal {
   position: fixed;
   top: 2rem;
   right: 0;
@@ -82,24 +82,24 @@ export default {
   border: 1px solid #2e2e2e;
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(128, 128, 128, 0.5);
 }
-.popup-header {
+.modal-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
 }
-.popup-title {
+.modal-title {
   margin: 0 auto;
 }
-.popup-footer {
+.modal-footer {
   display: flex;
   justify-content: space-around;
   align-items: center;
 }
-.popup-close {
+.modal-close {
   position: absolute;
   right: 1rem;
 }
-.popup-close:hover {
+.modal-close:hover {
   cursor: pointer;
   color: maroon;
 }

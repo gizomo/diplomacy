@@ -1,29 +1,29 @@
 <template>
   <div :id="svgId" class="svg-container"></div>
-  <pop-up v-if="isPopUpVisible" @closePopUp="closePopUpWindow">
+  <modal v-if="isModalVisible" @closeModal="closeModalWindow">
     <template #header>
       <img
         class="flag"
-        v-if="popUpObject.mapId"
-        :src="require('../assets/flags/' + popUpObject.mapId + '.svg')"
-        :alt="popUpObject.title"
+        v-if="modalObject.mapId"
+        :src="require('../assets/flags/' + modalObject.mapId + '.svg')"
+        :alt="modalObject.title"
       />
     </template>
     <template #content>
-      <h1>{{ popUpObject.title }}</h1>
+      <h1>{{ modalObject.title }}</h1>
     </template>
     <template #footer></template>
-  </pop-up>
+  </modal>
 </template>
 
 <script>
 import WorldMapData from "../assets/worldRussiaCrimeaLow";
-import PopUp from "./PopUp";
+import Modal from "./Modal";
 
 export default {
   name: "WorldMap",
   components: {
-    PopUp,
+    Modal,
   },
   data() {
     return {
@@ -36,8 +36,8 @@ export default {
       },
       svgContainer: null,
 
-      isPopUpVisible: false,
-      popUpObject: {
+      isModalVisible: false,
+      modalObject: {
         title: String,
         mapId: String,
       },
@@ -68,9 +68,9 @@ export default {
       };
       const element = svgCont.path(pathObj["d"]).attr(attrs);
       element.click(function () {
-        vm.popUpObject.title = this.node.attributes["title"].value;
-        vm.popUpObject.mapId = this.node.attributes["mapId"].value;
-        vm.isPopUpVisible = true;
+        vm.modalObject.title = this.node.attributes["title"].value;
+        vm.modalObject.mapId = this.node.attributes["mapId"].value;
+        vm.isModalVisible = true;
       });
       element.mouseover(function () {
         this.node.attributes["fill"].value = "#e2e2e2";
@@ -79,8 +79,8 @@ export default {
         this.node.attributes["fill"].value = "#fff";
       });
     },
-    closePopUpWindow() {
-      this.isPopUpVisible = false;
+    closeModalWindow() {
+      this.isModalVisible = false;
     },
   },
 };
