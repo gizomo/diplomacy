@@ -13,7 +13,7 @@
         Представленные в приложении профессии не стоит воспринимать как
         официальный список специальностей будущего. Цель приложения познакомить
         пользователя с многообразием профессиональных возможностей, которые
-        открывается для них на программах Факультета исторических и политических
+        открываются для них на программах Факультета исторических и политических
         наук.
       </p>
       <button class="start-orient" @click="startOrient">Начать</button>
@@ -30,18 +30,81 @@
         работодателям наиболее важными для успеха в будущем. Изучите их
         внимательно и выберите те, что показались вам интересными и важными.
       </p>
-      <div class="skills-list"></div>
-      <button class="skills-save">Продолжить</button>
+      <div class="options-list">
+        <check-box
+          v-for="skill in skills"
+          v-model="selectedSkills"
+          dataType="skills"
+          :key="skill.id"
+          :label="skill.name"
+          :value="skill.id"
+          :optionObj="skill"
+        />
+      </div>
+      <button class="skills-save" @click="skillsSave">Продолжить</button>
+    </div>
+    <div class="trends" v-if="isTrends">
+      <h1 class="trends-title">Актуальные тренды</h1>
+      <p>
+        На рынок труда сегодня оказывает влияние множество факторов, которые
+        задаются различными трендами. Старые профессии сильно видоизменяются или
+        исчезают под их давлением, а новые профессии требуют от специалистов
+        междисциплинарных знаний, гибкости, способности быстрой адаптации,
+        самоорганизации и самообразования на проятяжении всей жизни.
+      </p>
+      <p>
+        В приложении вы сможете познакомиться с наиболее актуальными трендами,
+        узнать какое влияние они оказывают на общество, и как они определяют
+        рынок труда будущего.
+      </p>
+      <div class="options-list">
+        <check-box
+          v-for="trend in trends"
+          v-model="selectedTrends"
+          dataType="trends"
+          :key="trend.id"
+          :label="trend.name"
+          :value="trend.id"
+          :optionObj="trend"
+        />
+      </div>
+      <button class="trends-save" @click="trendsSave">Продолжить</button>
+    </div>
+    <div class="professions-list" v-if="isProfessions">
+      <div
+        class="profession"
+        v-for="profession in aggregatedProfessions"
+        :key="profession.id"
+      >
+        <h3 class="profession-title">{{ profession.name }}</h3>
+      </div>
+      <button class="professions-reset" @click="profsReset">Сбросить</button>
     </div>
   </div>
 </template>
 <script>
+import ProfOrient from "../assets/profOrient";
+import CheckBox from "./CheckBox";
+
 export default {
   name: "ProfOrient",
+  components: {
+    CheckBox,
+  },
   data() {
     return {
       isInfo: true,
       isSkill: false,
+      isTrends: false,
+      isProfessions: false,
+
+      skills: ProfOrient.skills,
+      trends: ProfOrient.trends,
+      professions: ProfOrient.professions,
+      eduProgramms: ProfOrient.eduProgramms,
+
+      selectedSkills: [],
+      selectedTrends: [],
     };
   },
   methods: {
@@ -49,6 +112,45 @@ export default {
       this.isInfo = false;
       this.isSkill = true;
     },
+    skillsSave() {
+      this.isSkill = false;
+      this.isTrends = true;
+    },
+    trendsSave() {
+      this.isTrends = false;
+      this.isProfessions = true;
+    },
+    profsReset() {
+      this.isProfessions = false;
+      this.calcProfs = [];
+      this.selectedSkills = [];
+      this.selectedTrends = [];
+      this.isSkill = true;
+    },
+  },
+  computed: {
+    aggregatedProfessions() {
+      return this.professions.filter((profession) => {
+        return (
+          profession.skills.some((skill) => {
+            return this.selectedSkills.includes(skill);
+          }) &&
+          profession.trends.some((trend) => {
+            return this.selectedTrends.includes(trend);
+          })
+        );
+      });
+    },
   },
 };
 </script>
+<style scoped>
+.prof-orient {
+  padding: 3rem;
+}
+.options-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+</style>
