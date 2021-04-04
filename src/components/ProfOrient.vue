@@ -41,7 +41,9 @@
           :optionObj="skill"
         />
       </div>
-      <button class="skills-save" @click="skillsSave">Продолжить</button>
+      <div class="buttons">
+        <button class="skills-save" @click="skillsSave">Продолжить</button>
+      </div>
     </div>
     <div class="trends" v-if="isTrends">
       <h1 class="trends-title">Актуальные тренды</h1>
@@ -68,7 +70,9 @@
           :optionObj="trend"
         />
       </div>
-      <button class="trends-save" @click="trendsSave">Продолжить</button>
+      <div class="buttons">
+        <button class="trends-save" @click="trendsSave">Продолжить</button>
+      </div>
     </div>
     <div class="professions-list" v-if="isProfessions">
       <div
@@ -148,9 +152,20 @@ export default {
 .prof-orient {
   padding: 3rem;
 }
+.skills {
+  min-width: 20rem;
+  width: 50vw;
+  margin: 0 auto;
+  padding: 3rem 6rem;
+  background-color: #fafcff;
+  border-radius: 3rem;
+  box-shadow: 0px 25px 20px rgba(2, 100, 242, 0.2);
+}
 .options-list {
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* flex-direction: column; */
+  gap: 1rem;
 }
 </style>
