@@ -16,7 +16,9 @@
         открываются для них на программах Факультета исторических и политических
         наук.
       </p>
-      <button class="start-orient" @click="startOrient">Начать</button>
+      <div class="buttons">
+        <button class="start-orient" @click="startOrient">Начать</button>
+      </div>
     </div>
     <div class="skills" v-if="isSkill">
       <h1 class="skills-title">Надпрофессиональные навыки</h1>
@@ -36,9 +38,9 @@
           v-model="selectedSkills"
           dataType="skills"
           :key="skill.id"
-          :label="skill.name"
           :value="skill.id"
-          :optionObj="skill"
+          :checkBoxObject="skill"
+          @openInfo="openCheckBoxInfo"
         />
       </div>
       <div class="buttons">
@@ -65,9 +67,9 @@
           v-model="selectedTrends"
           dataType="trends"
           :key="trend.id"
-          :label="trend.name"
           :value="trend.id"
-          :optionObj="trend"
+          :checkBoxObject="trend"
+          @openInfo="openCheckBoxInfo"
         />
       </div>
       <div class="buttons">
@@ -87,18 +89,41 @@
       </div>
     </div>
   </div>
+  <transition name="fade">
+    <modal
+      v-if="isModalVisible"
+      :modalContent="modalObject"
+      @closeModal="closeModalWindow"
+    >
+      <template #header>
+        <span id="titleIcon"></span>
+        <h2>{{ modalObject.title }}</h2>
+      </template>
+      <template #content></template>
+      <template #footer></template>
+    </modal>
+  </transition>
 </template>
 <script>
 import ProfOrient from "../assets/profOrient";
+import Modal from "./Modal";
 import CheckBox from "./CheckBox";
 
 export default {
   name: "ProfOrient",
   components: {
+    Modal,
     CheckBox,
   },
   data() {
     return {
+      isModalVisible: false,
+      modalObject: {
+        title: String,
+        body: String,
+        button: String,
+      },
+
       isInfo: true,
       isSkill: false,
       isTrends: false,
@@ -114,17 +139,39 @@ export default {
     };
   },
   methods: {
+    closeModalWindow() {
+      this.isModalVisible = false;
+    },
+    openCheckBoxInfo(checkBoxObject) {
+      this.modalObject.title = checkBoxObject.name;
+      this.modalObject.body = checkBoxObject.description;
+      this.modalObject.button = "Закрыть";
+      this.isModalVisible = true;
+      this.$svg("titleIcon")
+        .size(50, 50)
+        .viewbox(0, 0, 26.4, 26.4)
+        .path(checkBoxObject.d)
+        .fill("#1e43e7");
+    },
     startOrient() {
       this.isInfo = false;
       this.isSkill = true;
     },
     skillsSave() {
-      this.isSkill = false;
-      this.isTrends = true;
+      if (this.selectedSkills.length == 0) {
+        alert("Вы не выбрали ни одного навыка");
+      } else {
+        this.isSkill = false;
+        this.isTrends = true;
+      }
     },
     trendsSave() {
-      this.isTrends = false;
-      this.isProfessions = true;
+      if (this.selectedTrends.length == 0) {
+        alert("Вы не выбрали ни одного тренда");
+      } else {
+        this.isTrends = false;
+        this.isProfessions = true;
+      }
     },
     profsReset() {
       this.isProfessions = false;
@@ -154,6 +201,7 @@ export default {
 .prof-orient {
   padding: 3rem;
 }
+.prof-orient-intro,
 .skills,
 .trends,
 .professions {
@@ -169,7 +217,15 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  /* flex-direction: column; */
   gap: 1rem;
+  padding: 1rem 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease-in-out;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

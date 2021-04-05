@@ -1,10 +1,10 @@
 <template>
-  <div class="wave-wrapp">
+  <!-- <div class="wave-wrapp">
     <div class="circles"></div>
     <div class="circles"></div>
-    <div class="wave"></div>
-    <div class="wave"></div>
-  </div>
+    <div class="waves"></div>
+    <div class="waves"></div>
+  </div> -->
   <prof-orient />
   <diplomacy-game v-if="false" />
 </template>
@@ -28,8 +28,7 @@ body {
   margin: 0;
   font-family: "Exo 2", sans-serif;
   color: #4a4a4a;
-  /* background: content-box url("./assets/bg.svg");
-  background-size: 100% auto; */
+  background-color: #34338e;
 }
 h1,
 h2,
@@ -67,7 +66,6 @@ button {
 button:hover {
   transition: all 0.3s ease-in-out;
   opacity: 0.7;
-  transform: translate3d(0, 0, 0);
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(2, 100, 242, 0.2);
 }
 .wave-wrapp {
@@ -77,38 +75,41 @@ button:hover {
   z-index: -1;
   overflow: hidden;
 }
+.circles,
+.waves {
+  position: absolute;
+  width: 100%;
+  height: 8000px;
+}
 .circles {
   background: url("./assets/circles.svg") repeat-y;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 800vh;
+  background-size: 100%;
 }
 .circles:nth-of-type(1) {
-  animation: wave 20s cubic-bezier(0.56, 0.65, 0.43, 0.33) -0.25s infinite;
+  top: 0;
+  left: -100px;
+  animation: wave 30s cubic-bezier(0.56, 0.65, 0.43, 0.33) infinite;
   opacity: 0.4;
 }
 .circles:nth-of-type(2) {
   top: -2000px;
-  animation: wave 50s cubic-bezier(0.56, 0.65, 0.43, 0.33) -0.25s infinite;
+  animation: wave 50s cubic-bezier(0.56, 0.65, 0.43, 0.33) infinite;
   opacity: 0.6;
 }
-.wave {
+.waves {
   background: url("./assets/wave.svg") repeat-y;
-  position: absolute;
-  width: 100%;
-  height: 800vh;
+  background-size: 100%;
 }
-.wave:nth-of-type(3) {
+.waves:nth-of-type(3) {
   top: 0;
-  animation: wave 40s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.25s infinite,
-    swull 20s ease -0.25s infinite;
+  animation: wave 40s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite,
+    swull 40s ease infinite;
   opacity: 0.15;
 }
-.wave:nth-of-type(4) {
+.waves:nth-of-type(4) {
   top: -2000px;
-  animation: wave 30s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.25s infinite,
-    swell 60s ease -0.25s infinite;
+  animation: wave 60s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite,
+    swell 60s ease infinite;
   opacity: 0.3;
 }
 @keyframes wave {

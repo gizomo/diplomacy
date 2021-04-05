@@ -2,35 +2,34 @@
   <label class="checkbox" :class="{ checked: isChecked }" :for="value">
     <input
       type="checkbox"
-      :id="value"
+      :id="checkBoxObject.id"
       :checked="isChecked"
-      :value="value"
       @change="onChange"
     />
     <span class="svgicon" :id="svgId"></span>
-    {{ label }}
+    {{ checkBoxObject.name }}
+    <span class="checkbox-info" @click.prevent="openInfo">
+      <i class="material-icons">info</i>
+    </span>
   </label>
 </template>
 <script>
 export default {
+  name: "CheckBox",
   model: {
     prop: "modelValue",
     event: "change",
   },
   props: {
     dataType: { type: String },
-    label: { type: String, required: true },
     modelValue: { type: Array },
     value: { type: Number },
-    optionObj: { type: Object },
+    checkBoxObject: { type: Object },
   },
   data() {
     return {
       checkedOption: this.modelValue,
-
       svgId: `svg_${this.dataType}_${this.value}`,
-      iconData: this.optionObj,
-      svgContainer: null,
     };
   },
   computed: {
@@ -39,6 +38,9 @@ export default {
     },
   },
   methods: {
+    openInfo() {
+      this.$emit("openInfo", this.checkBoxObject);
+    },
     onChange(event) {
       if (event.target.checked) {
         this.checkedOption.push(this.value);
@@ -48,10 +50,10 @@ export default {
       this.$emit("change", this.checkedOption);
     },
     generateIcon() {
-      this.svgContainer = this.$svg(this.svgId)
+      this.$svg(this.svgId)
         .size(50, 50)
         .viewbox(0, 0, 26.4, 26.4)
-        .path(this.iconData.d)
+        .path(this.checkBoxObject.d)
         .fill("#fafcff");
     },
   },
@@ -62,6 +64,7 @@ export default {
 </script>
 <style scoped>
 .checkbox {
+  position: relative;
   width: calc((100% / 3) + 2rem);
   display: flex;
   justify-content: center;
@@ -76,8 +79,18 @@ export default {
 .checkbox:hover {
   transition: all 0.3s ease-in-out;
   opacity: 0.7;
-  transform: translate3d(0, 0, 0);
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(2, 100, 242, 0.2);
+}
+.checkbox-info {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+  transition-delay: 0.5s;
+}
+.checkbox:hover .checkbox-info {
+  opacity: 1;
 }
 .checkbox input {
   display: none;

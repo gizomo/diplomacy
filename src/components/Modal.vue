@@ -2,20 +2,28 @@
   <div class="modal-wrapper" ref="modal_wrapper">
     <div class="modal">
       <div class="modal-header">
-        <div class="modal-title"><slot name="header"></slot></div>
+        <div class="modal-title">
+          <slot name="header">
+            <h2>{{ modalContent.title }}</h2>
+          </slot>
+        </div>
         <span class="modal-close" @click="closeModal">
           <i class="material-icons">close</i>
         </span>
       </div>
       <div class="modal-content">
-        <slot name="content"></slot>
+        <slot name="content">
+          <div v-html="Content.body"></div>
+        </slot>
       </div>
       <div class="modal-footer">
-        <slot name="footer">
-          <button class="modal-footer-button" @click="closeModal">
-            Продолжить
-          </button>
-        </slot>
+        <div class="buttons">
+          <slot name="footer">
+            <button class="modal-footer-button" @click="closeModal">
+              {{ modalContent.button }}
+            </button>
+          </slot>
+        </div>
       </div>
     </div>
   </div>
@@ -30,14 +38,11 @@ export default {
       default() {
         return {
           title: "Модальное окно",
+          body: "",
           button: "Ok",
-          content: {},
         };
       },
     },
-  },
-  data() {
-    return {};
   },
   methods: {
     closeModal() {
@@ -67,7 +72,7 @@ export default {
   bottom: 0;
   right: 0;
   left: 0;
-  height: 100vh;
+  height: 100%;
   background-color: rgba(64, 64, 64, 0.4);
 }
 .modal {
@@ -76,11 +81,11 @@ export default {
   right: 0;
   left: 0;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1rem 2rem;
   width: 50vw;
-  background-color: white;
-  border: 1px solid #2e2e2e;
-  box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(128, 128, 128, 0.5);
+  background-color: #fafcff;
+  border-radius: 1.5rem;
+  box-shadow: 0px 25px 20px rgba(2, 100, 242, 0.2);
 }
 .modal-header {
   display: flex;
