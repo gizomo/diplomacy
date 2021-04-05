@@ -13,7 +13,7 @@
       </div>
       <div class="modal-content">
         <slot name="content">
-          <div v-html="Content.body"></div>
+          <div v-html="modalContent.body"></div>
         </slot>
       </div>
       <div class="modal-footer">
@@ -94,6 +94,9 @@ export default {
 }
 .modal-title {
   margin: 0 auto;
+}
+.modal-content {
+  padding: 1rem 2rem;
 }
 .modal-footer {
   display: flex;

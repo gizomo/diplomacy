@@ -77,13 +77,45 @@
       </div>
     </div>
     <div class="professions" v-if="isProfessions">
-      <div
-        class="profession"
-        v-for="profession in aggregatedProfessions"
-        :key="profession.id"
-      >
-        <h3 class="profession-title">{{ profession.name }}</h3>
+      <div class="professions-list">
+        <div
+          class="profession"
+          v-for="profession in aggregatedProfessions"
+          :key="profession.id"
+        >
+          <h3 class="profession-title">{{ profession.name }}</h3>
+          <p class="profession-description" v-if="discriptionShow">
+            {{ profession.description }}
+          </p>
+          <div class="profession-skills">
+            <p class="profession-skills-title">
+              Надпрофессиональные навыки и умения
+            </p>
+            <svg-icon
+              v-for="(profSkill, index) in profSkills(profession.skills)"
+              :key="index"
+              :svgId="'skill_' + profession.id + 'icon_' + profSkill.id"
+              :size="[30, 30]"
+              :viewbox="[0, 0, 26.4, 26.4]"
+              :path="profSkill.d"
+              :fill="'#0f46e1'"
+            />
+          </div>
+          <div class="profession-trends">
+            <p class="profession-trends-title">Актуальные тренды</p>
+            <svg-icon
+              v-for="(profTrend, index) in profTrends(profession.trends)"
+              :key="index"
+              :svgId="'trend_' + profession.id + 'icon_' + profTrend.id"
+              :size="[30, 30]"
+              :viewbox="[0, 0, 26.4, 26.4]"
+              :path="profTrend.d"
+              :fill="'#fff'"
+            />
+          </div>
+        </div>
       </div>
+
       <div class="buttons">
         <button class="professions-reset" @click="profsReset">Повторить</button>
       </div>
@@ -108,12 +140,14 @@
 import ProfOrient from "../assets/profOrient";
 import Modal from "./Modal";
 import CheckBox from "./CheckBox";
+import SvgIcon from "./SvgIcon";
 
 export default {
   name: "ProfOrient",
   components: {
     Modal,
     CheckBox,
+    SvgIcon,
   },
   data() {
     return {
@@ -128,6 +162,7 @@ export default {
       isSkill: false,
       isTrends: false,
       isProfessions: false,
+      discriptionShow: false,
 
       skills: ProfOrient.skills,
       trends: ProfOrient.trends,
@@ -139,19 +174,24 @@ export default {
     };
   },
   methods: {
+    profSkills(profSkills) {
+      return this.skills.filter((skill) => {
+        return profSkills.includes(skill.id);
+      });
+    },
+    profTrends(profTrends) {
+      return this.trends.filter((trend) => {
+        return profTrends.includes(trend.id);
+      });
+    },
     closeModalWindow() {
       this.isModalVisible = false;
     },
     openCheckBoxInfo(checkBoxObject) {
+      this.isModalVisible = true;
       this.modalObject.title = checkBoxObject.name;
       this.modalObject.body = checkBoxObject.description;
       this.modalObject.button = "Закрыть";
-      this.isModalVisible = true;
-      this.$svg("titleIcon")
-        .size(50, 50)
-        .viewbox(0, 0, 26.4, 26.4)
-        .path(checkBoxObject.d)
-        .fill("#1e43e7");
     },
     startOrient() {
       this.isInfo = false;
@@ -219,6 +259,57 @@ export default {
   justify-content: center;
   gap: 1rem;
   padding: 1rem 0;
+}
+.professions-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+.profession {
+  width: 20rem;
+  overflow: hidden;
+  background-color: #fafcff;
+  border-radius: 1.5rem;
+  box-shadow: 0px 25px 20px rgba(2, 100, 242, 0.2);
+}
+.profession-title {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 10rem;
+  padding: 1rem;
+  margin: 0;
+  font-size: 1.25rem;
+  text-align: center;
+  color: #fff;
+  background-color: #34338e;
+}
+.profession-description {
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0 1.5rem;
+  font-size: 0.9rem;
+}
+.profession-skills,
+.profession-trends {
+  padding: 0.75rem;
+  text-align: center;
+}
+.profession-skills {
+  color: #0f46e1;
+  background-color: #00efd1;
+}
+.profession-trends {
+  color: #fff;
+  background-color: #0266f2;
+}
+.profession-skills-title,
+.profession-trends-title {
+  margin-top: 0;
+  font-size: 0.8rem;
+  text-transform: lowercase;
 }
 .fade-enter-active,
 .fade-leave-active {

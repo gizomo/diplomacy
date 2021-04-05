@@ -6,7 +6,13 @@
       :checked="isChecked"
       @change="onChange"
     />
-    <span class="svgicon" :id="svgId"></span>
+    <svg-icon
+      :svgId="dataType + '_icon_' + checkBoxObject.id"
+      :size="[50, 50]"
+      :viewbox="[0, 0, 26.4, 26.4]"
+      :path="checkBoxObject.d"
+      :fill="'#fafcff'"
+    />
     {{ checkBoxObject.name }}
     <span class="checkbox-info" @click.prevent="openInfo">
       <i class="material-icons">info</i>
@@ -14,8 +20,13 @@
   </label>
 </template>
 <script>
+import SvgIcon from "./SvgIcon";
+
 export default {
   name: "CheckBox",
+  components: {
+    SvgIcon,
+  },
   model: {
     prop: "modelValue",
     event: "change",
@@ -49,16 +60,6 @@ export default {
       }
       this.$emit("change", this.checkedOption);
     },
-    generateIcon() {
-      this.$svg(this.svgId)
-        .size(50, 50)
-        .viewbox(0, 0, 26.4, 26.4)
-        .path(this.checkBoxObject.d)
-        .fill("#fafcff");
-    },
-  },
-  mounted() {
-    this.generateIcon();
   },
 };
 </script>
