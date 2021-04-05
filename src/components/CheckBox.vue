@@ -69,7 +69,7 @@ export default {
   padding: 1rem 2rem;
   color: #fafcff;
   background-color: #0266f2;
-  border-radius: 0.25rem;
+  border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }

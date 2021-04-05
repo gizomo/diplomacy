@@ -74,7 +74,7 @@
         <button class="trends-save" @click="trendsSave">Продолжить</button>
       </div>
     </div>
-    <div class="professions-list" v-if="isProfessions">
+    <div class="professions" v-if="isProfessions">
       <div
         class="profession"
         v-for="profession in aggregatedProfessions"
@@ -82,7 +82,9 @@
       >
         <h3 class="profession-title">{{ profession.name }}</h3>
       </div>
-      <button class="professions-reset" @click="profsReset">Сбросить</button>
+      <div class="buttons">
+        <button class="professions-reset" @click="profsReset">Повторить</button>
+      </div>
     </div>
   </div>
 </template>
@@ -152,7 +154,9 @@ export default {
 .prof-orient {
   padding: 3rem;
 }
-.skills {
+.skills,
+.trends,
+.professions {
   min-width: 20rem;
   width: 50vw;
   margin: 0 auto;

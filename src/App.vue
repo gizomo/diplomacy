@@ -1,5 +1,8 @@
 <template>
   <div class="wave-wrapp">
+    <div class="circles"></div>
+    <div class="circles"></div>
+    <div class="wave"></div>
     <div class="wave"></div>
   </div>
   <prof-orient />
@@ -58,7 +61,7 @@ button {
   color: #fafcff;
   background-color: #dc5a12;
   border: none;
-  border-radius: 0.3rem;
+  border-radius: 0.5rem;
   cursor: pointer;
 }
 button:hover {
@@ -70,26 +73,68 @@ button:hover {
 .wave-wrapp {
   height: 100vh;
   width: 100vw;
-  position: absolute;
+  position: fixed;
   z-index: -1;
   overflow: hidden;
 }
-.wave {
-  background: url("./assets/bg.svg") repeat-y;
-  background-size: cover;
+.circles {
+  background: url("./assets/circles.svg") repeat-y;
   position: absolute;
-  width: 100vw;
   top: 0;
+  width: 100%;
   height: 800vh;
-  animation: wave 10s linear infinite;
-  transform: translate3d(0, 0, 0);
+}
+.circles:nth-of-type(1) {
+  animation: wave 20s cubic-bezier(0.56, 0.65, 0.43, 0.33) -0.25s infinite;
+  opacity: 0.4;
+}
+.circles:nth-of-type(2) {
+  top: -2000px;
+  animation: wave 50s cubic-bezier(0.56, 0.65, 0.43, 0.33) -0.25s infinite;
+  opacity: 0.6;
+}
+.wave {
+  background: url("./assets/wave.svg") repeat-y;
+  position: absolute;
+  width: 100%;
+  height: 800vh;
+}
+.wave:nth-of-type(3) {
+  top: 0;
+  animation: wave 40s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.25s infinite,
+    swull 20s ease -0.25s infinite;
+  opacity: 0.15;
+}
+.wave:nth-of-type(4) {
+  top: -2000px;
+  animation: wave 30s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.25s infinite,
+    swell 60s ease -0.25s infinite;
+  opacity: 0.3;
 }
 @keyframes wave {
   0% {
     margin-top: 0;
   }
   100% {
-    margin-top: -400vh;
+    margin-top: -4000px;
+  }
+}
+@keyframes swell {
+  0%,
+  100% {
+    transform: translate3d(-350px, 0, 0);
+  }
+  50% {
+    transform: translate3d(15px, 150px, 0);
+  }
+}
+@keyframes swull {
+  0%,
+  100% {
+    transform: translate3d(150px, 15px, 0);
+  }
+  50% {
+    transform: translate3d(25px, 0, 0);
   }
 }
 </style>
