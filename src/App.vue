@@ -65,7 +65,7 @@ button {
 }
 button:hover {
   transition: all 0.3s ease-in-out;
-  opacity: 0.7;
+  filter: brightness(120%);
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(2, 100, 242, 0.2);
 }
 .wave-wrapp {

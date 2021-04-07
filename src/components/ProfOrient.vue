@@ -78,19 +78,52 @@
     </div>
     <div class="professions" v-if="isProfessions">
       <div class="professions-list">
+        <div v-if="!aggregatedProfessions.length">
+          <p>
+            К сожалению, мы не смогил найти подходящих професий будущего под
+            выбранные вами навыки и актуальные тренды. Попробуйте выбрать больше
+            навыков или актуальных трендов.
+          </p>
+        </div>
+        <div v-else>
+          <p>
+            Мы подобрали все возможные профессии, для которых потребуется
+            освоение выбранных вами навыков и умений. Они также отвечают вашим
+            предпочтениям в актуальных общественных трендах.
+          </p>
+          <p>
+            Изучите информацию в заинтересовавших вас профессиях: какие навыки и
+            умения потребуется освоить дополнительно и за какими трендами
+            необходимо внимательно следить.
+          </p>
+          <p>
+            В каждой профессии вы найдете список образовательных программ
+            Факультета исторических и политических наук, обучение на которых
+            дает возможность получить профессию будущего и стать восстребованым
+            специалистом
+          </p>
+        </div>
         <div
           class="profession"
           v-for="profession in aggregatedProfessions"
           :key="profession.id"
         >
-          <h3 class="profession-title">{{ profession.name }}</h3>
+          <div class="profession-title">
+            <h3>{{ profession.name }}</h3>
+            <!-- <span
+              class="discription-toggle material-icons"
+              @click="discriptionShow = !discriptionShow"
+            >
+              outbox
+            </span> -->
+          </div>
           <p class="profession-description" v-if="discriptionShow">
             {{ profession.description }}
           </p>
           <div class="profession-skills">
-            <p class="profession-skills-title">
+            <!-- <p class="profession-skills-title">
               Надпрофессиональные навыки и умения
-            </p>
+            </p> -->
             <svg-icon
               v-for="(profSkill, index) in profSkills(profession.skills)"
               :key="index"
@@ -102,7 +135,7 @@
             />
           </div>
           <div class="profession-trends">
-            <p class="profession-trends-title">Актуальные тренды</p>
+            <!-- <p class="profession-trends-title">Актуальные тренды</p> -->
             <svg-icon
               v-for="(profTrend, index) in profTrends(profession.trends)"
               :key="index"
@@ -162,7 +195,7 @@ export default {
       isSkill: false,
       isTrends: false,
       isProfessions: false,
-      discriptionShow: false,
+      discriptionShow: true,
 
       skills: ProfOrient.skills,
       trends: ProfOrient.trends,
@@ -248,7 +281,7 @@ export default {
   min-width: 20rem;
   width: 50vw;
   margin: 0 auto;
-  padding: 3rem 6rem;
+  padding: 3rem;
   background-color: #fafcff;
   border-radius: 3rem;
   box-shadow: 0px 25px 20px rgba(2, 100, 242, 0.2);
@@ -264,10 +297,12 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: flex-start;
   gap: 2rem;
 }
 .profession {
-  width: 20rem;
+  position: relative;
+  width: 18rem;
   overflow: hidden;
   background-color: #fafcff;
   border-radius: 1.5rem;
@@ -275,17 +310,37 @@ export default {
 }
 .profession-title {
   box-sizing: border-box;
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 10rem;
   padding: 1rem;
   margin: 0;
+  background-color: #34338e;
+}
+.profession-title h3 {
   font-size: 1.25rem;
   text-align: center;
   color: #fff;
-  background-color: #34338e;
 }
+/* .discription-toggle {
+  position: absolute;
+  bottom: -1rem;
+  right: 1rem;
+  padding: 1rem;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  transform: rotate(180deg);
+  background-color: #0266f2;
+  box-shadow: 00 -5px 5px rgba(2, 100, 242, 0.5);
+  translate: all 0.3s ease-in;
+}
+.discription-toggle:hover {
+  filter: brightness(120%);
+} */
 .profession-description {
   box-sizing: border-box;
   overflow: hidden;
