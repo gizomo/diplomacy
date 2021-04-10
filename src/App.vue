@@ -5,10 +5,11 @@
     <div class="waves"></div>
     <div class="waves"></div>
   </div> -->
-  <prof-orient />
-  <diplomacy-game v-if="false" />
+  <div class="main-wrapper">
+    <prof-orient v-if="false" />
+    <diplomacy-game />
+  </div>
 </template>
-
 <script>
 import DiplomacyGame from "./components/DiplomacyGame";
 import ProfOrient from "./components/ProfOrient";
@@ -21,7 +22,6 @@ export default {
   },
 };
 </script>
-
 <style>
 body {
   position: relative;
@@ -67,6 +67,18 @@ button:hover {
   transition: all 0.3s ease-in-out;
   filter: brightness(120%);
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(2, 100, 242, 0.2);
+}
+.main-wrapper {
+  padding: 3rem;
+}
+.window {
+  min-width: 20rem;
+  width: 50vw;
+  margin: 0 auto;
+  padding: 3rem;
+  background-color: #fafcff;
+  border-radius: 3rem;
+  box-shadow: 0px 25px 20px rgba(2, 100, 242, 0.2);
 }
 .wave-wrapp {
   height: 100vh;

@@ -1,44 +1,39 @@
 <template>
-  <div class="main-wrapper">
-    <div class="intro" v-if="isIntro">
-      <h1 class="game-title">Почувствуй себя дипломатом</h1>
-      <h2 class="game-subtitle">
-        Открой для себя особенности современной мировой политики
-      </h2>
-      <hr />
-      <p>
-        1755 год. Европа стоит на пороге войны: Англия соперничает с Францией за
-        североамериканские колонии; у Австрии очень плохие отношения с Пруссией.
-        Европейские страны ведут свою сложную дипломатическую игру — всем
-        понятно, что в результате скорой войны баланс сил и государственные
-        границы в Европе изменятся, и каждому важно найти себе правильных
-        друзей, чтобы оказаться в итоге в числе победителей. России тоже
-        необходимо срочно определить свою позицию в запутанных дипломатических
-        отношениях.
-      </p>
-      <p>
-        Вас неожиданно назначают новым главой дипломатической службы, невзирая
-        на отсутствие у вас должного опыта, — предыдущий президент Коллегии
-        иностранных дел, опытный канцлер Алексей Петрович Бестужев-Рюмин, попал
-        в немилость к государыне-императрице Елизавете Петровне. Теперь именно
-        вы призваны упрочить положение России в Европе и сформировать устойчивый
-        политический альянс в условиях Семилетней войны. Постарайтесь выяснить,
-        с какими странами у нас есть общие интересы, и заключить как можно
-        больше военно-политических союзов. Дерзайте, в ваших силах изменить ход
-        истории!
-      </p>
-      <div class="game-menu">
-        <button class="open-rules" @click="openRules">Правила игры</button>
-        <button class="start-game" @click="startGame">Начать игру</button>
-      </div>
-    </div>
-    <div class="map-wrapper" v-if="!isIntro">
-      <world-map />
-    </div>
-    <div class="game-footer" v-if="!isIntro">
-      <button class="end-game" @click="endGame">Выйти из игры</button>
+  <div class="game-intro window" v-if="isIntro">
+    <h1 class="game-title">Почувствуй себя международником</h1>
+    <h2 class="game-subtitle">
+      Открой для себя особенности современной мировой политики
+    </h2>
+    <hr />
+    <div v-html="intro"></div>
+    <div class="buttons">
+      <button class="open-rules" @click="openRules">Правила игры</button>
+      <button class="start-game" @click="startGame">Начать игру</button>
     </div>
   </div>
+  <div class="map-wrapper" v-if="!isIntro">
+    <world-map />
+    <div class="stages">
+      <p
+        v-for="stage in stages"
+        :key="stage"
+        class="stage"
+        :class="{
+          completed: stage < currentStage,
+          current: stage == currentStage,
+        }"
+      >
+        Раунд {{ stage }}
+      </p>
+    </div>
+  </div>
+  <div class="buttons" v-if="!isIntro">
+    <button class="end-stage" v-if="currentStage <= stages" @click="endStage">
+      Завершить ход
+    </button>
+    <button class="end-game" @click="endGame">Выйти из игры</button>
+  </div>
+
   <modal v-if="isModalVisible" @closeModal="closeModalWindow">
     <template #header>
       <h2>{{ modalObject.title }}</h2>
@@ -51,6 +46,8 @@
 </template>
 <script>
 import WorldMap from "./WorldMap";
+import GameData from "../assets/gameData";
+import WorldMapData from "../assets/worldRussiaCrimeaLow";
 import Modal from "./Modal";
 
 export default {
@@ -62,6 +59,11 @@ export default {
   data() {
     return {
       isIntro: true,
+      intro: GameData.intro,
+
+      stages: 9,
+      currentStage: 1,
+      countries: WorldMapData.countries,
 
       isModalVisible: false,
       modalObject: {
@@ -73,37 +75,47 @@ export default {
   methods: {
     openRules() {
       this.modalObject.title = "Правила игры";
-      this.modalObject.body = `<ul><li>На карте Европы отмечены восемь стран, с которыми можно взаимодействовать в ходе игры. Задача игрока — заключить как можно больше военно-политических союзов с любыми из них.</li>
-    <li>Игра продолжается семь ходов. В начале каждого из них игрок получает сообщение о том, как изменилась историческая ситуация с предыдущего хода.</li>
-    <li>После этого игроку предлагается совершить действия по отношению к любым трем странам из восьми: он может объявлять войну, вводить торговое эмбарго и делать разные дипломатические предложения (в том числе предложение заключить союз).</li>
-    <li>Каждая страна может принять или не принять сделанное ей предложение — это зависит от ее отношения к России. Разные действия требуют разного уровня доверия.</li>
-    <li>Отношение к России оценено в условных единицах (от –5 до +5). Узнать его можно, отправив в нужную страну шпиона. За ход это можно сделать только один раз.</li>
-    <li>В начале игры отношение каждой страны к России обусловлено историческими причинами. По ходу игры оно меняется в зависимости от предложений, которые игрок делает как самой стране, так и ее друзьям и врагам. Это значит, что по ходу игры становятся возможными некоторые действия, невозможные в начале, — и наоборот.</li>
-    <li>Страна может разорвать союз с Россией в случае невыполнения игроком союзни­ческих обязательств. Чем больше военно-политических союзов будет у России на конец седьмого хода, тем более успешным можно считать прохождение игры.</li></ul>`;
+      this.modalObject.body = GameData.rules;
       this.isModalVisible = true;
     },
     startGame() {
       this.isIntro = false;
     },
+    endStage() {
+      this.currentStage++;
+    },
     endGame() {
       this.isIntro = true;
+    },
+    vote() {
+      let voteSum = 0;
+      this.countries.forEach((country) => {
+        if (country.scripts) {
+          voteSum += country.scripts[0];
+        }
+      });
+      console.log(voteSum);
     },
     closeModalWindow() {
       this.isModalVisible = false;
     },
   },
+  watch: {
+    currentStage(stage) {
+      if (stage % 3 == 0) {
+        this.vote();
+      }
+    },
+  },
 };
 </script>
 <style scoped>
-.main-wrapper {
-  padding: 3rem;
-}
-.map-wrapper {
+/* .map-wrapper {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
-}
+} */
 .intro {
   width: 50vw;
   margin: 0 auto;
@@ -118,15 +130,26 @@ export default {
 .game-subtitle {
   font-weight: 300;
 }
-.game-menu {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.stages {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  background-color: #fff;
 }
-.game-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.stage {
+  margin: 0;
+  padding: 1rem 0;
+  color: #808080;
+  text-align: center;
+  border: 1px solid #808080;
+}
+.completed {
+  color: #fff;
+  background-color: dodgerblue;
+  border: 1px solid #fff;
+}
+.current {
+  color: #fff;
+  background-color: orangered;
+  border: 1px solid #fff;
 }
 </style>

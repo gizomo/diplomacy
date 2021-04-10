@@ -299,41 +299,48 @@
             "programms": [2,3,4,5]
         }
     ],
-    "eduPrograms": [
+    "eduProgramms": [
         {
             "id": 1,
             "code": "41.03.01",
-            "name": "Зарубежное регионоведение"
+            "name": "Зарубежное регионоведение",
+            "link": "http://ba-fipn.tsu.ru/zarubezhnyi-regionoved/"
         },
         {
             "id": 2,
             "code": "41.03.02",
-            "name": "Регионоведение России"
+            "name": "Регионоведение России",
+            "link": "http://ba-fipn.tsu.ru/regionoved-rossii/"
         },
         {
             "id": 3,
             "code": "41.03.04",
-            "name": "Политология"
+            "name": "Политология",
+            "link": "http://ba-fipn.tsu.ru/politolog/"
         },
         {
             "id": 4,
             "code": "41.03.05",
-            "name": "Международные отношения"
+            "name": "Международные отношения",
+            "link": "http://ba-fipn.tsu.ru/mezhdunarodnik/"
         },
         {
             "id": 5,
             "code": "46.03.01",
-            "name": "История"
+            "name": "История",
+            "link": "http://ba-fipn.tsu.ru/istorik/"
         },
         {
             "id": 6,
             "code": "46.03.02",
-            "name": "Документоведение и архивоведение"
+            "name": "Документоведение и архивоведение",
+            "link": "http://ba-fipn.tsu.ru/dokumentoved/"
         },
         {
             "id": 7,
             "code": "46.03.03",
-            "name": "Антропология и этнология"
+            "name": "Антропология и этнология",
+            "link": "http://ba-fipn.tsu.ru/antropolog/"
         }
     ]
 }

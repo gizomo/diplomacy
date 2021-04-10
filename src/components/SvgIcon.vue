@@ -1,5 +1,5 @@
 <template>
-  <span class="svgicon" :id="svgId"></span>
+  <span class="svgicon" :id="svgId" @click="tooltip"></span>
 </template>
 <script>
 export default {
@@ -11,6 +11,11 @@ export default {
     path: String,
     fill: String,
   },
+  methods: {
+    tooltip() {
+      this.$emit("tooltip");
+    },
+  },
   mounted() {
     this.$svg(this.svgId)
       .size(this.size[0], this.size[1])
@@ -20,3 +25,12 @@ export default {
   },
 };
 </script>
+<style scoped>
+.svgicon {
+  display: inline-block;
+}
+.svgicon:hover {
+  stroke: #fff;
+  opacity: 0.7;
+}
+</style>

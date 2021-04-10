@@ -8,6 +8,7 @@
         :src="require('../assets/flags/' + modalObject.mapId + '.svg')"
         :alt="modalObject.title"
       />
+      <h2 class="country-name">{{ modalObject.title }}</h2>
     </template>
     <template #content>
       <h1>{{ modalObject.title }}</h1>
@@ -48,7 +49,7 @@ export default {
   },
   methods: {
     generateMap() {
-      const mapData = WorldMapData.g.path;
+      const mapData = WorldMapData.countries;
       const svgContainer = this.$svg("worldMap")
         .size(this.mapAttr.svgWitdh, this.mapAttr.svgHeight)
         .viewbox(0, 0, this.mapAttr.viewBoxWidth, this.mapAttr.viewBoxHeight);
@@ -92,10 +93,17 @@ export default {
   padding: 2rem;
   overflow: hidden;
   background-color: #abcdef;
-  border: 1px solid #2e2e2e;
+  border: 1px solid #fff;
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(128, 128, 128, 0.5);
 }
 .flag {
+  display: block;
   width: 6rem;
+  margin: 0 auto;
+}
+.country-name {
+  margin: 0;
+  text-align: center;
+  color: #2e2e2e;
 }
 </style>
