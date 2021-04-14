@@ -33,7 +33,7 @@ body {
 h1,
 h2,
 h3 {
-  color: #1e43e7;
+  color: steelblue;
 }
 a {
   color: #6194ff;
@@ -67,6 +67,19 @@ button:hover {
   transition: all 0.3s ease-in-out;
   filter: brightness(120%);
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(2, 100, 242, 0.2);
+}
+.votes {
+  display: flex;
+  gap: 1rem;
+}
+.ayes {
+  color: forestgreen;
+}
+.nays {
+  color: firebrick;
+}
+.abstainers {
+  color: grey;
 }
 .main-wrapper {
   padding: 3rem;

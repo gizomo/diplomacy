@@ -24,10 +24,13 @@ export default class Country {
     const attIndex = this.actualScriptsAtt.findIndex(
       (attitude) => attitude.name === scriptName
     );
-    if (attIndex != -1) {
-      this.actualScriptsAtt.splice(attIndex, 1, scriptValue);
-    } else {
+    if (attIndex < 0) {
       this.actualScriptsAtt.push({ name: scriptName, value: scriptValue });
+    } else {
+      this.actualScriptsAtt.splice(attIndex, 1, {
+        name: scriptName,
+        value: scriptValue,
+      });
     }
   }
 }

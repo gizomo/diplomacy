@@ -1,10 +1,11 @@
 export default class Vote {
   constructor(countries, script) {
-    this.resolution = script.title;
+    this.resolution = script.optionName;
     this.ayes = [];
     this.nays = [];
     this.abstainers = [];
     this.getVotes(countries, script);
+    this.result = this.ayes.length > this.nays.length;
   }
 
   getVotes(countries, script) {
@@ -20,9 +21,5 @@ export default class Vote {
         this.abstainers.push(country.title);
       }
     });
-  }
-
-  countVotes(votes) {
-    return votes.length;
   }
 }

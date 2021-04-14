@@ -4,7 +4,8 @@ export default class Bitcoin {
     this.description = "";
     this.optionName =
       "Принять Bitcoin в качестве международной резервной валюты";
-    this.active = false;
+    this.active = true;
+    this.passed = false;
   }
   calculateCountryAtt(country) {
     return country.getInitScriptAtt(this.title) + country.attToRussia;

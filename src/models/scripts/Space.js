@@ -3,7 +3,8 @@ export default class Space {
     this.title = "space";
     this.description = "";
     this.optionName = "Запрет на конкуренцию в космосе";
-    this.active = false;
+    this.active = true;
+    this.passed = false;
   }
   spaceDaybonus() {
     const spaceDay = new Date(1961, 3, 12);
