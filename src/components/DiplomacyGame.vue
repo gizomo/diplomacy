@@ -11,7 +11,7 @@
       <button class="start-game" @click="startGame">Начать игру</button>
     </div>
   </div>
-  <div class="map-wrapper" v-if="!isIntro">
+  <div class="game-wrapper" v-if="!isIntro">
     <world-map />
     <div class="stages">
       <p
@@ -120,8 +120,12 @@ export default {
         this.Countries.push(new Country(countryData));
       });
       const scriptLauncher = new ScriptsCreator();
-      this.Scripts.push(scriptLauncher.createScript("bitcoin"));
-      this.Scripts.push(scriptLauncher.createScript("space"));
+      Array.prototype.push.apply(
+        this.Scripts,
+        scriptLauncher.createAllScripts()
+      );
+      // this.Scripts.push(scriptLauncher.createScript("bitcoin"));
+      // this.Scripts.push(scriptLauncher.createScript("space"));
     },
     endStage() {
       if (this.currentStage % 3 == 0) {
@@ -199,6 +203,9 @@ export default {
 }
 .game-subtitle {
   font-weight: 300;
+}
+.game-wrapper {
+  box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgba(128, 128, 128, 0.5);
 }
 .stages {
   display: grid;

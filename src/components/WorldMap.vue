@@ -1,5 +1,9 @@
 <template>
-  <div :id="svgId" class="svg-container"></div>
+  <div class="map">
+    <panZoom selector="#worldMap" :options="{ minZoom: 1, maxZoom: 2 }">
+      <div :id="svgId" class="svg-container"></div>
+    </panZoom>
+  </div>
   <modal v-if="isModalVisible" @closeModal="closeModalWindow">
     <template #header>
       <img
@@ -54,6 +58,7 @@ export default {
         .size(this.mapAttr.svgWitdh, this.mapAttr.svgHeight)
         .viewbox(0, 0, this.mapAttr.viewBoxWidth, this.mapAttr.viewBoxHeight);
       this.svgContainer = svgContainer;
+      svgContainer.id("countries");
       mapData.forEach((pathObj) => {
         this.generatePath(svgContainer, pathObj);
       });
@@ -88,13 +93,14 @@ export default {
 </script>
 
 <style scoped>
-.svg-container {
-  height: 70vh;
-  padding: 2rem;
+.map {
   overflow: hidden;
   background-color: #abcdef;
   border: 1px solid #fff;
-  box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgb(128, 128, 128, 0.5);
+}
+.svg-container {
+  height: 70vh;
+  padding: 2rem;
 }
 .flag {
   display: block;
