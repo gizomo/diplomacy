@@ -10,6 +10,7 @@ export default class Country {
       { name: "space", value: this.getRandom(10) },
       { name: "nuclear", value: this.getRandom(10) },
       { name: "carbon", value: this.getRandom(10) },
+      { name: "labor", value: this.getRandom(10) },
     ];
     this.actualScriptsAtt = [];
   }

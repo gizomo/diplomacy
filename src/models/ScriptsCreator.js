@@ -21,7 +21,6 @@ export default class ScriptsCreator {
   // }
 
   createAllScripts() {
-    console.log(ScriptModules);
     Object.values(ScriptModules).forEach((Module) =>
       this.scripts.push(new Module())
     );
