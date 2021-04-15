@@ -8,6 +8,8 @@ export default class Country {
     this.initScriptsAtt = [
       { name: "bitcoin", value: this.getRandom(10) },
       { name: "space", value: this.getRandom(10) },
+      { name: "nuclear", value: this.getRandom(10) },
+      { name: "carbon", value: this.getRandom(10) },
     ];
     this.actualScriptsAtt = [];
   }

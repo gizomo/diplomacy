@@ -15,13 +15,12 @@ export default class Space {
         spaceDay.getMonth() == today.getMonth()
       );
     };
-    return isToday ? 5 : 0;
+    return isToday ? 2 : 1;
   }
   calculateCountryAtt(country) {
     return (
       country.getInitScriptAtt(this.title) +
-      country.attToRussia +
-      this.spaceDaybonus()
+      country.attToRussia * this.spaceDaybonus()
     );
   }
 }
