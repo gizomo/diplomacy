@@ -7,18 +7,9 @@ export default class ScriptsCreator {
     this.scripts = [];
   }
 
-  // createScript(type) {
-  //   let script;
-  //   switch (type) {
-  //     case "bitcoin":
-  //       script = new ScriptModules.Bitcoin();
-  //       break;
-  //     case "space":
-  //       script = new ScriptModules.Space();
-  //       break;
-  //   }
-  //   return script;
-  // }
+  createScript(type) {
+    return new ScriptModules[type]();
+  }
 
   createAllScripts() {
     Object.values(ScriptModules).forEach((Module) =>

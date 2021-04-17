@@ -24,7 +24,6 @@ export default class Carbon {
       new Date(),
       new Date(today.setMonth(today.getMonth() - 1)),
     ].map((date) => {
-      console.log(date);
       return (
         date.getFullYear() + "-0" + (date.getMonth() + 1) + "-" + date.getDate()
       );

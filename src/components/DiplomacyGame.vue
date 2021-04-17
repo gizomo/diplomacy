@@ -70,15 +70,20 @@
     </template>
     <template #footer></template>
   </modal>
+
+  <vue-notification-list position="top-right"></vue-notification-list>
 </template>
 <script>
+import { useNotificationStore } from "@dafcoe/vue-notification";
+import "@dafcoe/vue-notification/dist/vue-notification.css";
+import Modal from "./Modal";
 import WorldMap from "./WorldMap";
 import GameData from "../assets/gameData";
 import WorldMapData from "../assets/worldRussiaCrimeaLow";
 import Country from "../models/Country";
 import Vote from "../models/Vote";
 import ScriptsCreator from "../models/ScriptsCreator";
-import Modal from "./Modal";
+import EventsCreator from "../models/EventsCreator";
 
 export default {
   name: "DiplomacyGame",
@@ -93,6 +98,7 @@ export default {
 
       Countries: [],
       Scripts: [],
+      Events: [],
       Votes: [],
 
       stages: 9,
@@ -124,13 +130,16 @@ export default {
         this.Scripts,
         scriptLauncher.createAllScripts()
       );
-      // this.Scripts.push(scriptLauncher.createScript("bitcoin"));
-      // this.Scripts.push(scriptLauncher.createScript("space"));
+      const eventLauncher = new EventsCreator();
+      Array.prototype.push.apply(this.Events, eventLauncher.createAllEvents());
+      this.launchEvents(2);
     },
     endStage() {
       if (this.currentStage % 3 == 0) {
-        this.vote(this.selectedResolution);
-        this.selectedResolution = null;
+        if (this.selectedResolution) {
+          this.vote(this.selectedResolution);
+          this.selectedResolution = null;
+        }
       }
       this.currentStage++;
     },
@@ -178,6 +187,34 @@ export default {
     },
     closeModalWindow() {
       this.isModalVisible = false;
+      this.isResolutionVisible = false;
+    },
+    setEvent(gameEvent) {
+      const notification = {
+        message: gameEvent.description,
+        type: "info",
+        showIcon: true,
+        dismiss: {
+          manually: true,
+          automatically: true,
+        },
+        duration: 5000,
+        showDurationProgress: true,
+        appearance: "light",
+      };
+      const { setNotification } = useNotificationStore();
+      setNotification(notification);
+    },
+    launchEvents(qty) {
+      this.Events.filter((eItem) => eItem.active == false)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, qty)
+        .forEach((filteredE) => {
+          this.Events[
+            this.Events.findIndex((n) => n.name == filteredE.name)
+          ].activateEvent();
+          this.setEvent(filteredE);
+        });
     },
   },
   watch: {
@@ -185,6 +222,7 @@ export default {
       if ((stage + 1) % 3 == 0) {
         this.isResolutionVisible = true;
       }
+      this.launchEvents(3);
     },
   },
 };
