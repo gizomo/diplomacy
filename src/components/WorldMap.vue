@@ -14,12 +14,15 @@
       <h2 class="country-name">{{ selectedCountry.title }}</h2>
     </template>
     <template #content>
-      <p>{{ selectedCountry.description }}</p>
+      <p class="country-description">{{ selectedCountry.description }}</p>
+      <p class="country-inteligence" v-if="selectedCountry.inteligence">
+        Отношение к России: {{ selectedCountry.attToRussia }}
+      </p>
       <hr />
       <div class="agreements-list">
         <label
           class="agreement-title"
-          v-for="(agreement, index) in agreements"
+          v-for="(agreement, index) in filteredAgreements()"
           :key="index"
         >
           <input type="radio" v-model="selectedAgreement" :value="agreement" />
@@ -28,6 +31,13 @@
       </div>
     </template>
     <template #footer>
+      <button
+        v-if="!selectedCountry.inteligence && spies > 0"
+        class="modal-footer-button"
+        @click="sentSpy"
+      >
+        Внедрить шпиона
+      </button>
       <button
         v-if="selectedAgreement"
         class="modal-footer-button"
@@ -52,10 +62,16 @@ export default {
   props: {
     countries: Array,
   },
+  emits: {
+    sentSpy: null,
+  },
   data() {
     return {
       svgId: "worldMap",
       svgContainer: null,
+      hoverCountryColor: "",
+
+      spies: 10,
 
       agreements: GameData.agreements,
       selectedAgreement: null,
@@ -83,9 +99,20 @@ export default {
     },
     generatePath(svgCont, pathObj) {
       const vm = this;
+      let fillColor = "#fff";
+      let opacity = 1;
+      const country = vm.countries.find((country) => country.id == pathObj.id);
+      opacity = country.attToRussia / 10;
+      if (country.attToRussia > 0) {
+        fillColor = "#2eb62c";
+      } else if (country.attToRussia < 0) {
+        fillColor = "#dc1c13";
+        opacity *= -1;
+      }
       const attrs = {
-        fill: "#fff",
+        fill: fillColor,
         stroke: "#7e7e7e",
+        opacity: opacity,
         "stroke-width": 1,
         title: pathObj["title"],
         mapId: pathObj["id"],
@@ -96,25 +123,52 @@ export default {
         vm.openAgreementDialog(vm.countryId);
       });
       element.mouseover(function () {
+        vm.hoverCountryColor = this.node.attributes["fill"].value;
         this.node.attributes["fill"].value = "#e2e2e2";
       });
       element.mouseout(function () {
-        this.node.attributes["fill"].value = "#fff";
+        this.node.attributes["fill"].value = vm.hoverCountryColor;
       });
     },
     openAgreementDialog(countryId) {
       this.selectedCountry = this.countries.find(
         (country) => country.id == countryId
       );
-      console.log(countryId);
       this.isModalVisible = true;
     },
     initAgreement() {
       console.log(this.selectedAgreement);
+      this.selectedAgreement = null;
       this.closeModalWindow();
     },
     closeModalWindow() {
       this.isModalVisible = false;
+    },
+    sentSpy() {
+      this.spies--;
+      this.$emit("sentSpy", this.selectedCountry.id);
+    },
+    filteredAgreements() {
+      return this.agreements.filter((item) => {
+        switch (item.name) {
+          case "nuclear":
+            return ["CN", "FR", "GB", "RU", "US"].includes(
+              this.selectedCountry.id
+            );
+          case "apposition":
+          case "cyber":
+            return (
+              this.selectedCountry.inteligence &&
+              this.selectedCountry.attToRussia < item.score
+            );
+          default:
+            if (item.score >= 0) {
+              return this.selectedCountry.attToRussia >= item.score;
+            } else {
+              return this.selectedCountry.attToRussia <= item.score;
+            }
+        }
+      });
     },
   },
 };
@@ -139,5 +193,15 @@ export default {
   margin: 0;
   text-align: center;
   color: #2e2e2e;
+}
+.country-inteligence {
+  text-align: center;
+}
+.agreements-list {
+  width: 70%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 </style>

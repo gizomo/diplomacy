@@ -12,7 +12,7 @@
     </div>
   </div>
   <div class="game-wrapper" v-if="!isIntro">
-    <world-map :countries="Countries" />
+    <world-map :countries="Countries" @sentSpy="startInteligence" />
     <div class="stages">
       <p
         v-for="stage in stages"
@@ -215,6 +215,10 @@ export default {
           ].activateEvent();
           this.setEvent(filteredE);
         });
+    },
+    startInteligence(countryId) {
+      const cIdx = this.Countries.findIndex((c) => c.id == countryId);
+      this.Countries[cIdx].inteligence = true;
     },
   },
   watch: {
