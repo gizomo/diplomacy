@@ -1,5 +1,6 @@
 export default class Country {
   constructor(countryData) {
+    this.id = countryData.id;
     this.title = countryData.title;
     this.description = "";
     // this.attToRussia = countryData.attToRussia;
@@ -13,6 +14,7 @@ export default class Country {
       { name: "labor", value: this.getRandom(10) },
     ];
     this.actualScriptsAtt = [];
+    this.inteligence = false;
   }
   getRandom(max) {
     return Math.floor(Math.random() * max * 2) - max;

@@ -39,7 +39,7 @@ export default {
         return {
           title: "Модальное окно",
           body: "",
-          button: "Ok",
+          button: "Закрыть",
         };
       },
     },

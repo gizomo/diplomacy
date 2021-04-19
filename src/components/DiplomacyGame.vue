@@ -12,7 +12,7 @@
     </div>
   </div>
   <div class="game-wrapper" v-if="!isIntro">
-    <world-map />
+    <world-map :countries="Countries" />
     <div class="stages">
       <p
         v-for="stage in stages"

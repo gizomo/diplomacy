@@ -8,21 +8,40 @@
     <template #header>
       <img
         class="flag"
-        v-if="modalObject.mapId"
-        :src="require('../assets/flags/' + modalObject.mapId + '.svg')"
-        :alt="modalObject.title"
+        :src="require('../assets/flags/' + countryId + '.svg')"
+        :alt="selectedCountry.title"
       />
-      <h2 class="country-name">{{ modalObject.title }}</h2>
+      <h2 class="country-name">{{ selectedCountry.title }}</h2>
     </template>
     <template #content>
-      <h1>{{ modalObject.title }}</h1>
+      <p>{{ selectedCountry.description }}</p>
+      <hr />
+      <div class="agreements-list">
+        <label
+          class="agreement-title"
+          v-for="(agreement, index) in agreements"
+          :key="index"
+        >
+          <input type="radio" v-model="selectedAgreement" :value="agreement" />
+          {{ agreement.title }}
+        </label>
+      </div>
     </template>
-    <template #footer></template>
+    <template #footer>
+      <button
+        v-if="selectedAgreement"
+        class="modal-footer-button"
+        @click="initAgreement"
+      >
+        Внести
+      </button>
+    </template>
   </modal>
 </template>
 
 <script>
 import WorldMapData from "../assets/worldRussiaCrimeaLow";
+import GameData from "../assets/gameData";
 import Modal from "./Modal";
 
 export default {
@@ -30,22 +49,21 @@ export default {
   components: {
     Modal,
   },
+  props: {
+    countries: Array,
+  },
   data() {
     return {
       svgId: "worldMap",
-      mapAttr: {
-        svgWitdh: "100%",
-        svgHeight: "100%",
-        viewBoxWidth: 1028,
-        viewBoxHeight: 680,
-      },
       svgContainer: null,
 
+      agreements: GameData.agreements,
+      selectedAgreement: null,
+
+      countryId: "",
+      selectedCountry: null,
+
       isModalVisible: false,
-      modalObject: {
-        title: String,
-        mapId: String,
-      },
     };
   },
   mounted() {
@@ -55,8 +73,8 @@ export default {
     generateMap() {
       const mapData = WorldMapData.countries;
       const svgContainer = this.$svg("worldMap")
-        .size(this.mapAttr.svgWitdh, this.mapAttr.svgHeight)
-        .viewbox(0, 0, this.mapAttr.viewBoxWidth, this.mapAttr.viewBoxHeight);
+        .size("100%", "100%")
+        .viewbox(0, 0, 1028, 680);
       this.svgContainer = svgContainer;
       svgContainer.id("countries");
       mapData.forEach((pathObj) => {
@@ -74,9 +92,8 @@ export default {
       };
       const element = svgCont.path(pathObj["d"]).attr(attrs);
       element.click(function () {
-        vm.modalObject.title = this.node.attributes["title"].value;
-        vm.modalObject.mapId = this.node.attributes["mapId"].value;
-        vm.isModalVisible = true;
+        vm.countryId = attrs.mapId;
+        vm.openAgreementDialog(vm.countryId);
       });
       element.mouseover(function () {
         this.node.attributes["fill"].value = "#e2e2e2";
@@ -84,6 +101,17 @@ export default {
       element.mouseout(function () {
         this.node.attributes["fill"].value = "#fff";
       });
+    },
+    openAgreementDialog(countryId) {
+      this.selectedCountry = this.countries.find(
+        (country) => country.id == countryId
+      );
+      console.log(countryId);
+      this.isModalVisible = true;
+    },
+    initAgreement() {
+      console.log(this.selectedAgreement);
+      this.closeModalWindow();
     },
     closeModalWindow() {
       this.isModalVisible = false;
