@@ -198,7 +198,7 @@ export default {
           manually: true,
           automatically: true,
         },
-        duration: 5000,
+        duration: 10000,
         showDurationProgress: true,
         appearance: "light",
       };
@@ -267,8 +267,7 @@ export default {
   border: 1px solid #fff;
 }
 .current {
-  color: #fff;
-  background-color: orangered;
+  background-color: #00efd1;
   border: 1px solid #fff;
 }
 .resolutions-list {

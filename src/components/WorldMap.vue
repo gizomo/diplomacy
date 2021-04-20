@@ -1,11 +1,19 @@
 <template>
   <div class="map">
-    <panZoom selector="#worldMap" :options="{ minZoom: 1, maxZoom: 2 }">
+    <panZoom selector="#worldMap" :options="{ minZoom: 1, maxZoom: 3 }">
       <div :id="svgId" class="svg-container"></div>
     </panZoom>
   </div>
   <modal v-if="isModalVisible" @closeModal="closeModalWindow">
     <template #header>
+      <button
+        class="spy"
+        v-if="!selectedCountry.inteligence && spies > 0"
+        v-tooltip="'Внедрить шпиона (осталось: ' + spies + ')'"
+        @click="sentSpy"
+      >
+        <img :src="require('../assets/spy.svg')" />
+      </button>
       <img
         class="flag"
         :src="require('../assets/flags/' + countryId + '.svg')"
@@ -25,25 +33,26 @@
           v-for="(agreement, index) in filteredAgreements()"
           :key="index"
         >
-          <input type="radio" v-model="selectedAgreement" :value="agreement" />
+          <input
+            type="radio"
+            v-model="selectedAgreement"
+            :value="agreement"
+            :disabled="agreementsStatus(selectedCountry.id)"
+          />
           {{ agreement.title }}
         </label>
       </div>
+      <p class="agreement-deny" v-if="agreementsStatus(selectedCountry.id)">
+        Нельзя выполнить более одного действия за ход с одной и той же страной.
+      </p>
     </template>
     <template #footer>
       <button
-        v-if="!selectedCountry.inteligence && spies > 0"
-        class="modal-footer-button"
-        @click="sentSpy"
-      >
-        Внедрить шпиона
-      </button>
-      <button
-        v-if="selectedAgreement"
+        v-if="selectedAgreement && !agreementsStatus(selectedCountry.id)"
         class="modal-footer-button"
         @click="initAgreement"
       >
-        Внести
+        Продолжить
       </button>
     </template>
   </modal>
@@ -75,6 +84,7 @@ export default {
 
       agreements: GameData.agreements,
       selectedAgreement: null,
+      concludedAgreements: [],
 
       countryId: "",
       selectedCountry: null,
@@ -101,20 +111,19 @@ export default {
       const vm = this;
       let fillColor = "#fff";
       let opacity = 1;
-      const country = vm.countries.find((country) => country.id == pathObj.id);
-      opacity = country.attToRussia / 10;
-      if (country.attToRussia > 0) {
-        fillColor = "#2eb62c";
-      } else if (country.attToRussia < 0) {
-        fillColor = "#dc1c13";
-        opacity *= -1;
-      }
+      // const country = vm.countries.find((country) => country.id == pathObj.id);
+      // opacity = country.attToRussia / 10;
+      // if (country.attToRussia > 0) {
+      //   fillColor = "#2eb62c";
+      // } else if (country.attToRussia < 0) {
+      //   fillColor = "#dc1c13";
+      //   opacity *= -1;
+      // }
       const attrs = {
         fill: fillColor,
         stroke: "#7e7e7e",
-        opacity: opacity,
+        "fill-opacity": opacity,
         "stroke-width": 1,
-        title: pathObj["title"],
         mapId: pathObj["id"],
       };
       const element = svgCont.path(pathObj["d"]).attr(attrs);
@@ -124,7 +133,15 @@ export default {
       });
       element.mouseover(function () {
         vm.hoverCountryColor = this.node.attributes["fill"].value;
-        this.node.attributes["fill"].value = "#e2e2e2";
+        this.node.attributes["fill"].value = "#00efd1";
+        if (!this.node.hasChildNodes()) {
+          let title = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "title"
+          );
+          title.textContent = pathObj["title"];
+          this.node.appendChild(title);
+        }
       });
       element.mouseout(function () {
         this.node.attributes["fill"].value = vm.hoverCountryColor;
@@ -136,17 +153,8 @@ export default {
       );
       this.isModalVisible = true;
     },
-    initAgreement() {
-      console.log(this.selectedAgreement);
-      this.selectedAgreement = null;
-      this.closeModalWindow();
-    },
-    closeModalWindow() {
-      this.isModalVisible = false;
-    },
-    sentSpy() {
-      this.spies--;
-      this.$emit("sentSpy", this.selectedCountry.id);
+    agreementsStatus(countryId) {
+      return this.concludedAgreements.includes(countryId);
     },
     filteredAgreements() {
       return this.agreements.filter((item) => {
@@ -170,6 +178,20 @@ export default {
         }
       });
     },
+    initAgreement() {
+      console.log(this.selectedAgreement);
+      this.concludedAgreements.push(this.selectedCountry.id);
+      this.selectedAgreement = null;
+      this.closeModalWindow();
+    },
+    closeModalWindow() {
+      this.selectedAgreement = null;
+      this.isModalVisible = false;
+    },
+    sentSpy() {
+      this.spies--;
+      this.$emit("sentSpy", this.selectedCountry.id);
+    },
   },
 };
 </script>
@@ -183,6 +205,19 @@ export default {
 .svg-container {
   height: 70vh;
   padding: 2rem;
+}
+.spy {
+  all: unset;
+  position: absolute;
+  left: 1.5rem;
+  top: 1.5rem;
+  width: 3rem;
+  border: none;
+  background-color: none;
+  cursor: pointer;
+}
+.spy:hover {
+  transform: scale(1.1);
 }
 .flag {
   display: block;
@@ -203,5 +238,9 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+.agreement-deny {
+  color: firebrick;
+  text-align: center;
 }
 </style>
