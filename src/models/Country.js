@@ -14,6 +14,7 @@ export default class Country {
       { name: "labor", value: this.getRandom(10) },
     ];
     this.actualScriptsAtt = [];
+    this.countryAgreements = [];
     this.inteligence = false;
   }
   getRandom(max) {
@@ -24,6 +25,21 @@ export default class Country {
       (attitude) => attitude.name === scriptName
     );
     return attitude.value;
+  }
+  hasAgreement(agreement) {
+    return this.countryAgreements.includes(agreement);
+  }
+  addAgreement(agreement) {
+    this.countryAgreements.push(agreement.name);
+    if (agreement.score >= 0) {
+      this.attToRussia++;
+    }
+    if (agreement.score < 0) {
+      this.attToRussia--;
+    }
+  }
+  plantSpy() {
+    this.inteligence = true;
   }
   setActualScriptAtt(scriptName, scriptValue) {
     const attIndex = this.actualScriptsAtt.findIndex(

@@ -46,13 +46,13 @@ export default {
   },
   methods: {
     closeModal() {
-      document.body.style.overflow = null;
+      // document.body.style.overflow = null;
       this.$emit("closeModal");
     },
   },
   mounted() {
     const vm = this;
-    document.body.style.overflow = "hidden";
+    // document.body.style.overflow = "hidden";
     document.addEventListener("click", function (item) {
       if (item.target === vm.$refs["modal_wrapper"]) {
         vm.closeModal();
@@ -76,7 +76,7 @@ export default {
   background-color: rgba(64, 64, 64, 0.4);
 }
 .modal {
-  position: fixed;
+  position: absolute;
   top: 2rem;
   right: 0;
   left: 0;
