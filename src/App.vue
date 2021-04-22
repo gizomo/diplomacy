@@ -73,12 +73,15 @@ button:hover {
   gap: 1rem;
 }
 .ayes {
+  white-space: nowrap;
   color: forestgreen;
 }
 .nays {
+  white-space: nowrap;
   color: firebrick;
 }
 .abstainers {
+  white-space: nowrap;
   color: grey;
 }
 .main-wrapper {

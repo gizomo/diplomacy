@@ -12,7 +12,7 @@
     </div>
   </div>
   <div class="game-wrapper" v-if="!isIntro">
-    <world-map :countries="Countries" ref="map" />
+    <world-map :countries="Countries" @openStat="openStatDialog" ref="map" />
     <div class="stages">
       <p
         v-for="stage in stages"
@@ -61,6 +61,59 @@
     </template>
   </modal>
 
+  <modal v-if="isStatVisible" @closeModal="closeModalWindow">
+    <template #header>
+      <h2>Статистика игры</h2>
+    </template>
+    <template #content>
+      <div class="sourses">
+        <div class="spy-stat">
+          <img :src="require('../assets/spy.svg')" />
+          <p>Осталось шпионов: {{ spies }}</p>
+        </div>
+        <div class="hacker-stat">
+          <img :src="require('../assets/hacker.svg')" />
+          <p>Осталось кибер-атак: {{ hackers }}</p>
+        </div>
+      </div>
+      <hr />
+      <h3 class="stat-resolutions-title">Резолюции</h3>
+      <ul class="vote-results" v-if="Votes.length">
+        <li v-for="(vote, index) in Votes" :key="index">
+          <p class="vote-title" @click="votesMore[index] = !votesMore[index]">
+            {{ vote.resolution }}
+            <span class="ayes" v-if="vote.result">(принята)</span>
+            <span class="nays" v-else>(не принята)</span>
+          </p>
+          <div class="vote-results-more" v-if="votesMore[index]">
+            <div class="votes-list">
+              <span class="ayes">За {{ vote.ayes.length }}</span>
+              <span v-for="(yes, idxy) in vote.ayes" :key="idxy">
+                {{ yes }}
+              </span>
+            </div>
+            <div class="votes-list">
+              <span class="nays">Против {{ vote.nays.length }}</span>
+              <span v-for="(no, idxn) in vote.nays" :key="idxn">
+                {{ no }}
+              </span>
+            </div>
+            <div class="votes-list">
+              <span class="abstainers">
+                Воздержались {{ vote.abstainers.length }}
+              </span>
+              <span v-for="(abstainers, idxa) in vote.abstainers" :key="idxa">
+                {{ abstainers }}
+              </span>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <p class="no-votes" v-else>Резолюции еще не выносились на голосование.</p>
+    </template>
+    <template #footer></template>
+  </modal>
+
   <modal v-if="isModalVisible" @closeModal="closeModalWindow">
     <template #header>
       <h2>{{ modalObject.title }}</h2>
@@ -104,6 +157,11 @@ export default {
       stages: 9,
       currentStage: 1,
 
+      isStatVisible: false,
+      votesMore: [],
+      spies: 0,
+      hackers: 0,
+
       isResolutionVisible: false,
       selectedResolution: null,
 
@@ -119,6 +177,12 @@ export default {
       this.modalObject.title = "Правила игры";
       this.modalObject.body = GameData.rules;
       this.isModalVisible = true;
+    },
+    openStatDialog(e) {
+      this.spies = e.spies;
+      this.hackers = e.hackers;
+      this.votesMore.fill(false, 0, this.Votes.length);
+      this.isStatVisible = true;
     },
     startGame() {
       this.isIntro = false;
@@ -141,7 +205,7 @@ export default {
           this.selectedResolution = null;
         }
       }
-      this.$refs.map.clearConcludedAgreements();
+      this.$refs.map.clearActions();
       this.currentStage++;
     },
     endGame() {
@@ -189,6 +253,7 @@ export default {
     closeModalWindow() {
       this.isModalVisible = false;
       this.isResolutionVisible = false;
+      this.isStatVisible = false;
     },
     setEvent(gameEvent) {
       const notification = {
@@ -266,6 +331,50 @@ export default {
 .current {
   background-color: #00efd1;
   border: 1px solid #fff;
+}
+.sourses {
+  display: flex;
+  justify-content: space-around;
+}
+.hacker-stat,
+.spy-stat {
+  text-align: center;
+}
+.hacker-stat img,
+.spy-stat img {
+  height: 3rem;
+}
+.stat-resolutions-title,
+.no-votes {
+  text-align: center;
+}
+.vote-results {
+  list-style: none;
+  padding: 0;
+}
+.vote-title {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border: 1px solid #f7f7f7;
+  cursor: pointer;
+}
+.vote-title:hover {
+  background-color: #99fff1;
+}
+.vote-results-more {
+  max-height: 20rem;
+  display: flex;
+  padding: 1rem;
+  gap: 1rem;
+  font-size: 0.8rem;
+  overflow-y: scroll;
+}
+.votes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 .resolutions-list {
   width: 60%;

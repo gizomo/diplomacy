@@ -14,6 +14,19 @@
       >
         <img :src="require('../assets/spy.svg')" />
       </button>
+      <button
+        class="hacker"
+        v-if="
+          selectedCountry.inteligence &&
+          selectedCountry.attToRussia <= -5 &&
+          hackers > 0 &&
+          !cyberAtacks.includes(selectedCountry.id)
+        "
+        v-tooltip="'Совершить кибер-атаку (осталось: ' + hackers + ')'"
+        @click="cyberAtack"
+      >
+        <img :src="require('../assets/hacker.svg')" />
+      </button>
       <img
         class="flag"
         :src="require('../assets/flags/' + selectedCountry.id + '.svg')"
@@ -77,6 +90,8 @@ export default {
       hoverCountryColor: "",
 
       spies: 10,
+      hackers: 10,
+      cyberAtacks: [],
 
       agreements: GameData.agreements,
       selectedAgreement: null,
@@ -105,12 +120,12 @@ export default {
       let opacity = 1;
       // Colorise Map
       // const country = vm.countries.find((country) => country.id == pathObj.id);
-      // opacity = country.attToRussia / 10;
       // if (country.attToRussia > 0) {
       //   fillColor = "#2eb62c";
+      //   opacity = 0.5 + country.attToRussia * 0.05;
       // } else if (country.attToRussia < 0) {
       //   fillColor = "#dc1c13";
-      //   opacity *= -1;
+      //   opacity = 0.5 + country.attToRussia * 0.05 * -1;
       // }
       const attrs = {
         fill: fillColor,
@@ -121,7 +136,11 @@ export default {
       };
       const element = svgCont.path(pathObj["d"]).attr(attrs);
       element.click(function () {
-        vm.openAgreementDialog(attrs.mapId);
+        if (attrs.mapId === "RU") {
+          vm.$emit("openStat", { spies: vm.spies, hackers: vm.hackers });
+        } else {
+          vm.openAgreementDialog(attrs.mapId);
+        }
       });
       element.mouseover(function () {
         vm.hoverCountryColor = this.node.attributes["fill"].value;
@@ -159,10 +178,9 @@ export default {
               this.selectedCountry.id
             );
           case "apposition":
-          case "cyber":
             return (
               this.selectedCountry.inteligence &&
-              this.selectedCountry.attToRussia < item.score
+              this.selectedCountry.attToRussia <= item.score
             );
           default:
             if (item.score >= 1) {
@@ -182,8 +200,9 @@ export default {
       }
       this.closeModalWindow();
     },
-    clearConcludedAgreements() {
+    clearActions() {
       this.concludedAgreements = [];
+      this.cyberAtacks = [];
     },
     closeModalWindow() {
       this.selectedAgreement = null;
@@ -193,6 +212,10 @@ export default {
     sentSpy() {
       this.spies--;
       this.selectedCountry.plantSpy();
+    },
+    cyberAtack() {
+      this.hackers--;
+      this.cyberAtacks.push(this.selectedCountry.id);
     },
   },
 };
@@ -208,7 +231,8 @@ export default {
   height: 70vh;
   padding: 2rem;
 }
-.spy {
+.spy,
+.hacker {
   all: unset;
   position: absolute;
   left: 1.5rem;
@@ -218,6 +242,7 @@ export default {
   background-color: none;
   cursor: pointer;
 }
+.hacker:hover,
 .spy:hover {
   transform: scale(1.1);
 }
