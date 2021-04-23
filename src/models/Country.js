@@ -1,24 +1,34 @@
 export default class Country {
-  constructor(countryData) {
+  constructor(countryData, scripts) {
     this.id = countryData.id;
     this.title = countryData.title;
     this.description = "";
     // this.attToRussia = countryData.attToRussia;
     this.attToRussia = this.getRandom(10);
     // this.initScriptsAtt = countryData.initScriptsAtt;
-    this.initScriptsAtt = [
-      { name: "bitcoin", value: this.getRandom(10) },
-      { name: "space", value: this.getRandom(10) },
-      { name: "nuclear", value: this.getRandom(10) },
-      { name: "carbon", value: this.getRandom(10) },
-      { name: "labor", value: this.getRandom(10) },
-    ];
+    this.initScriptsAtt = this.initScripts(scripts);
+    // this.initScriptsAtt = [
+    //   { name: "bitcoin", value: this.getRandom(10) },
+    //   { name: "space", value: this.getRandom(10) },
+    //   { name: "nuclear", value: this.getRandom(10) },
+    //   { name: "carbon", value: this.getRandom(10) },
+    //   { name: "labor", value: this.getRandom(10) },
+    // ];
     this.actualScriptsAtt = [];
     this.countryAgreements = [];
     this.inteligence = false;
   }
   getRandom(max) {
     return Math.floor(Math.random() * max * 2) - max;
+  }
+  initScripts(scripts) {
+    return scripts.map((script) => {
+      return {
+        name: script.title,
+        title: script.optionName,
+        value: this.getRandom(10),
+      };
+    });
   }
   getInitScriptAtt(scriptName) {
     const attitude = this.initScriptsAtt.find(

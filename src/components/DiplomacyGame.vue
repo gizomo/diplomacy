@@ -186,9 +186,6 @@ export default {
     },
     startGame() {
       this.isIntro = false;
-      WorldMapData.countries.forEach((countryData) => {
-        this.Countries.push(new Country(countryData));
-      });
       const scriptLauncher = new ScriptsCreator();
       Array.prototype.push.apply(
         this.Scripts,
@@ -197,6 +194,9 @@ export default {
       const eventLauncher = new EventsCreator();
       Array.prototype.push.apply(this.Events, eventLauncher.createAllEvents());
       this.launchEvents(2);
+      WorldMapData.countries.forEach((countryData) => {
+        this.Countries.push(new Country(countryData, this.Scripts));
+      });
     },
     endStage() {
       if (this.currentStage % 3 == 0) {

@@ -20,7 +20,7 @@
           selectedCountry.inteligence &&
           selectedCountry.attToRussia <= -5 &&
           hackers > 0 &&
-          !cyberAtacks.includes(selectedCountry.id)
+          !countryHacked
         "
         v-tooltip="'Совершить кибер-атаку (осталось: ' + hackers + ')'"
         @click="cyberAtack"
@@ -39,6 +39,43 @@
       <p class="country-inteligence" v-if="selectedCountry.inteligence">
         Отношение к России: {{ selectedCountry.attToRussia }}
       </p>
+      <div v-if="countryHacked">
+        <p class="country-resolution-attitude">
+          <strong>Отношение к резолюциям</strong><br />
+          (вмешаться в итоги внутреннего голосования по резолюциям)<br />
+          Очки вмешательства: {{ cyberInfluence.value }}
+        </p>
+        <div
+          v-if="selectedCountry.actualScriptsAtt.length"
+          class="attitude-list"
+        >
+          <p
+            v-for="attitude in filteredAttitude()"
+            :key="attitude.name"
+            class="resolution-attitude"
+          >
+            <span>{{ attitude.title }}</span>
+            <span class="attitude-value">
+              <i
+                class="material-icons arrows"
+                @click="changeAtt(attitude, cyberInfluence, -1)"
+              >
+                arrow_left
+              </i>
+              {{ attitude.value }}
+              <i
+                class="material-icons arrows"
+                @click="changeAtt(attitude, cyberInfluence, 1)"
+              >
+                arrow_right
+              </i>
+            </span>
+          </p>
+        </div>
+        <p v-else class="country-resolution-attitude">
+          Голосование по резолюциям еще не проводилось.
+        </p>
+      </div>
       <hr />
       <div class="agreements-list">
         <label
@@ -215,7 +252,43 @@ export default {
     },
     cyberAtack() {
       this.hackers--;
-      this.cyberAtacks.push(this.selectedCountry.id);
+      this.cyberAtacks.push({
+        country: this.selectedCountry.id,
+        value: 10,
+      });
+    },
+    filteredAttitude() {
+      return this.selectedCountry.initScriptsAtt.filter((attitude) => {
+        return this.selectedCountry.actualScriptsAtt.some(
+          (script) => script.name == attitude.name
+        );
+      });
+    },
+    changeAtt(attitude, cyberInfluence, n) {
+      if (cyberInfluence.value > 0 && cyberInfluence.value <= 10) {
+        switch (n) {
+          case 1:
+            attitude.value++;
+            cyberInfluence.value--;
+            break;
+          case -1:
+            attitude.value--;
+            cyberInfluence.value--;
+            break;
+        }
+      }
+    },
+  },
+  computed: {
+    countryHacked() {
+      return this.cyberAtacks.some(
+        (atack) => atack.country == this.selectedCountry.id
+      );
+    },
+    cyberInfluence() {
+      return this.cyberAtacks.find(
+        (atack) => atack.country == this.selectedCountry.id
+      );
     },
   },
 };
@@ -256,8 +329,21 @@ export default {
   text-align: center;
   color: #2e2e2e;
 }
-.country-inteligence {
+.country-inteligence,
+.country-resolution-attitude {
   text-align: center;
+}
+.resolution-attitude {
+  display: flex;
+  justify-content: space-between;
+}
+.attitude-value {
+  min-width: 4rem;
+  display: flex;
+  justify-content: space-between;
+}
+.arrows {
+  cursor: pointer;
 }
 .agreements-list {
   width: 70%;
