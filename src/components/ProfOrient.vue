@@ -1,6 +1,7 @@
 <template>
   <div class="prof-orient-intro window" v-if="isInfo">
     <h1 class="prof-orient-title">Выбери свою профессию будущего</h1>
+    <img class="prof-orient-image" :src="require('../assets/fipn.png')" />
     <p class="prof-orient-info">
       Приложение разработано на основе материалов
       <a href="https://new.atlas100.ru/">"Атласа новых профессий"</a>, который
@@ -17,6 +18,9 @@
     </p>
     <div class="buttons">
       <button class="start-orient" @click="startOrient">Начать</button>
+      <button class="return" @click="$emit('backToMenu')">
+        Вернуться в меню
+      </button>
     </div>
   </div>
   <div class="skills window" v-if="isSkill">
@@ -44,6 +48,7 @@
     </div>
     <div class="buttons">
       <button class="skills-save" @click="skillsSave">Продолжить</button>
+      <button class="skills-exit" @click="skillsExit">Закончить</button>
     </div>
   </div>
   <div class="trends window" v-if="isTrends">
@@ -73,6 +78,7 @@
     </div>
     <div class="buttons">
       <button class="trends-save" @click="trendsSave">Продолжить</button>
+      <button class="skills-exit" @click="skillsExit">Закончить</button>
     </div>
   </div>
   <div class="professions window" v-if="isProfessions">
@@ -158,6 +164,7 @@
     </div>
     <div class="buttons">
       <button class="professions-reset" @click="profsReset">Повторить</button>
+      <button class="skills-exit" @click="skillsExit">Закончить</button>
     </div>
   </div>
   <transition name="fade">
@@ -188,6 +195,7 @@ export default {
     CheckBox,
     SvgIcon,
   },
+  emits: ["backToMenu"],
   data() {
     return {
       isModalVisible: false,
@@ -264,6 +272,12 @@ export default {
       this.selectedTrends = [];
       this.isSkill = true;
     },
+    skillsExit() {
+      this.profsReset();
+      this.isTrends = false;
+      this.isSkill = false;
+      this.isInfo = true;
+    },
   },
   computed: {
     aggregatedProfessions() {
@@ -282,6 +296,17 @@ export default {
 };
 </script>
 <style scoped>
+.prof-orient-title {
+  font-size: 2.5rem;
+  color: #0f46e1;
+  text-align: center;
+}
+.prof-orient-image {
+  display: block;
+  width: 60%;
+  margin: 3rem auto;
+  text-align: center;
+}
 .options-list {
   display: flex;
   flex-wrap: wrap;

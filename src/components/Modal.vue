@@ -4,6 +4,12 @@
       <div class="modal-header">
         <div class="modal-title">
           <slot name="header">
+            <img
+              v-if="modalContent.imageTitle"
+              class="flag"
+              :src="require('../assets/flags/UN.svg')"
+              alt="ООН"
+            />
             <h2>{{ modalContent.title }}</h2>
           </slot>
         </div>
@@ -37,6 +43,7 @@ export default {
       type: Object,
       default() {
         return {
+          imageTitle: false,
           title: "Модальное окно",
           body: "",
           button: "Закрыть",
@@ -51,6 +58,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.modalContent.imageTitle);
     const vm = this;
     // document.body.style.overflow = "hidden";
     document.addEventListener("click", function (item) {

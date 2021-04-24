@@ -1,13 +1,41 @@
 <template>
-  <!-- <div class="wave-wrapp">
-    <div class="circles"></div>
-    <div class="circles"></div>
-    <div class="waves"></div>
-    <div class="waves"></div>
-  </div> -->
   <div class="main-wrapper">
-    <prof-orient v-if="false" />
-    <diplomacy-game />
+    <div class="main-menu" v-if="menu">
+      <div class="edu window">
+        <div class="content">
+          <h1>Выбери свою профессию будущего</h1>
+          <p>
+            Узнай, какие профессии будут востребованы в будущем. Выбери полезные
+            профессиональные навыки. Следи за современными трендами. Найди свою
+            образовательную программу на Факультете исторических и политических
+            наук НИ ТГУ.
+          </p>
+          <div class="buttons">
+            <button @click="startEdu">Перейти</button>
+          </div>
+        </div>
+        <div class="image">
+          <img :src="require('./assets/fipn.png')" />
+        </div>
+      </div>
+      <div class="game window">
+        <div class="content">
+          <h1>Международник</h1>
+          <p>
+            Хочешь узнать, какой из тебя международник? Попробуй свои силы в
+            интерактивной игре "Я международник".
+          </p>
+          <div class="buttons">
+            <button @click="startGame">Играть</button>
+          </div>
+        </div>
+        <div class="image">
+          <img :src="require('./assets/inter.png')" />
+        </div>
+      </div>
+    </div>
+    <prof-orient v-if="edu" @backToMenu="startMenu" />
+    <diplomacy-game v-if="game" @backToMenu="startMenu" />
   </div>
 </template>
 <script>
@@ -19,6 +47,28 @@ export default {
   components: {
     DiplomacyGame,
     ProfOrient,
+  },
+  data() {
+    return {
+      menu: true,
+      edu: false,
+      game: false,
+    };
+  },
+  methods: {
+    startEdu() {
+      this.menu = false;
+      this.edu = true;
+    },
+    startGame() {
+      this.menu = false;
+      this.game = true;
+    },
+    startMenu() {
+      this.menu = true;
+      this.edu = false;
+      this.game = false;
+    },
   },
 };
 </script>
@@ -87,6 +137,11 @@ button:hover {
 .main-wrapper {
   padding: 3rem;
 }
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
 .window {
   min-width: 20rem;
   width: 50vw;
@@ -96,74 +151,28 @@ button:hover {
   border-radius: 3rem;
   box-shadow: 0px 25px 20px rgba(2, 100, 242, 0.2);
 }
-.wave-wrapp {
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  z-index: -1;
-  overflow: hidden;
+.edu,
+.game {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
 }
-.circles,
-.waves {
-  position: absolute;
+.game div:first-child {
+  order: 1;
+}
+.content h1 {
+  font-size: 2.5rem;
+  color: #0f46e1;
+}
+.content p {
+  padding: 2rem;
+  line-height: 1.5rem;
+}
+.image {
+  display: flex;
+  align-items: center;
+}
+.image img {
   width: 100%;
-  height: 8000px;
-}
-.circles {
-  background: url("./assets/circles.svg") repeat-y;
-  background-size: 100%;
-}
-.circles:nth-of-type(1) {
-  top: 0;
-  left: -100px;
-  animation: wave 30s cubic-bezier(0.56, 0.65, 0.43, 0.33) infinite;
-  opacity: 0.4;
-}
-.circles:nth-of-type(2) {
-  top: -2000px;
-  animation: wave 50s cubic-bezier(0.56, 0.65, 0.43, 0.33) infinite;
-  opacity: 0.6;
-}
-.waves {
-  background: url("./assets/wave.svg") repeat-y;
-  background-size: 100%;
-}
-.waves:nth-of-type(3) {
-  top: 0;
-  animation: wave 40s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite,
-    swull 40s ease infinite;
-  opacity: 0.15;
-}
-.waves:nth-of-type(4) {
-  top: -2000px;
-  animation: wave 60s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite,
-    swell 60s ease infinite;
-  opacity: 0.3;
-}
-@keyframes wave {
-  0% {
-    margin-top: 0;
-  }
-  100% {
-    margin-top: -4000px;
-  }
-}
-@keyframes swell {
-  0%,
-  100% {
-    transform: translate3d(-350px, 0, 0);
-  }
-  50% {
-    transform: translate3d(15px, 150px, 0);
-  }
-}
-@keyframes swull {
-  0%,
-  100% {
-    transform: translate3d(150px, 15px, 0);
-  }
-  50% {
-    transform: translate3d(25px, 0, 0);
-  }
 }
 </style>

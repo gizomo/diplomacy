@@ -9,6 +9,9 @@
     <div class="buttons">
       <button class="open-rules" @click="openRules">Правила игры</button>
       <button class="start-game" @click="startGame">Начать игру</button>
+      <button class="return" @click="$emit('backToMenu')">
+        Вернуться в меню
+      </button>
     </div>
   </div>
   <div class="game-wrapper" v-if="!isIntro">
@@ -36,6 +39,7 @@
 
   <modal v-if="isResolutionVisible" @closeModal="closeModalWindow">
     <template #header>
+      <img class="flag" :src="require('../assets/flags/UN.svg')" alt="ООН" />
       <h2>Внесите резолюцию на голосование в ООН</h2>
     </template>
     <template #content>
@@ -114,14 +118,11 @@
     <template #footer></template>
   </modal>
 
-  <modal v-if="isModalVisible" @closeModal="closeModalWindow">
-    <template #header>
-      <h2>{{ modalObject.title }}</h2>
-    </template>
-    <template #content>
-      <div v-html="modalObject.body"></div>
-    </template>
-    <template #footer></template>
+  <modal
+    v-if="isModalVisible"
+    :modalContent="modalObject"
+    @closeModal="closeModalWindow"
+  >
   </modal>
 
   <vue-notification-list position="top-right"></vue-notification-list>
@@ -144,6 +145,7 @@ export default {
     WorldMap,
     Modal,
   },
+  emits: ["backToMenu"],
   data() {
     return {
       isIntro: true,
@@ -167,8 +169,10 @@ export default {
 
       isModalVisible: false,
       modalObject: {
+        imageTitle: Boolean,
         title: String,
         body: String,
+        button: String,
       },
     };
   },
@@ -176,6 +180,7 @@ export default {
     openRules() {
       this.modalObject.title = "Правила игры";
       this.modalObject.body = GameData.rules;
+      this.modalObject.button = "Закрыть";
       this.isModalVisible = true;
     },
     openStatDialog(e) {
@@ -246,8 +251,10 @@ export default {
       <p><span class="abstainers">Воздержалось:</span> ${voteData.abstainers.length}</p>
       </div>
       ${result}`;
-      this.modalObject.title = "Итоги голосования";
+      this.modalObject.imageTitle = true;
+      this.modalObject.title = "Итоги голосования в ООН";
       this.modalObject.body = voteResults;
+      this.modalObject.button = "Закрыть";
       this.isModalVisible = true;
     },
     closeModalWindow() {
@@ -329,6 +336,7 @@ export default {
   border: 1px solid #fff;
 }
 .current {
+  color: #000;
   background-color: #00efd1;
   border: 1px solid #fff;
 }
@@ -385,5 +393,10 @@ export default {
 }
 .resolution-title {
   font-weight: 600;
+}
+.flag {
+  display: block;
+  width: 9rem;
+  margin: 0 auto;
 }
 </style>

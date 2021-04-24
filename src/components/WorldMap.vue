@@ -121,6 +121,7 @@ export default {
   props: {
     countries: Array,
   },
+  emits: ["openStat"],
   data() {
     return {
       svgContainer: null,
