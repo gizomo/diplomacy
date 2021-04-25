@@ -1,6 +1,6 @@
 <template>
   <div class="game-intro window" v-if="isIntro">
-    <h1 class="game-title">Почувствуй себя международником</h1>
+    <h1 class="game-title">Я международник</h1>
     <h2 class="game-subtitle">
       Открой для себя особенности современной мировой политики
     </h2>
@@ -210,7 +210,8 @@ export default {
     endStage() {
       if (this.currentStage % 3 == 0) {
         if (this.selectedResolution) {
-          this.vote(this.selectedResolution);
+          this.calcAttitude();
+          this.vote();
           this.selectedResolution = null;
         }
       }
@@ -221,20 +222,31 @@ export default {
       this.isIntro = true;
     },
     filterScripts(active, passed) {
-      return this.Scripts.filter(
-        (script) => script.active == active && script.passed == passed
+      return this.Scripts.filter((script) => {
+        if (script.title == "nuclear") {
+          const nuclearStates = this.Countries.filter((state) =>
+            ["CN", "FR", "GB", "US"].includes(state.id)
+          );
+          script.active = nuclearStates.every((nuclear) =>
+            nuclear.hasAgreement("nuclear")
+          );
+        }
+        return script.active == active && script.passed == passed;
+      });
+    },
+    calcAttitude(resolution = this.selectedResolution) {
+      this.Countries.forEach((country) =>
+        country.setActualScriptAtt(
+          resolution.title,
+          resolution.calculateCountryAtt(country)
+        )
       );
     },
     initResolution() {
-      this.Countries.forEach((country) =>
-        country.setActualScriptAtt(
-          this.selectedResolution.title,
-          this.selectedResolution.calculateCountryAtt(country)
-        )
-      );
+      this.calcAttitude();
       this.isResolutionVisible = false;
     },
-    vote(resolution) {
+    vote(resolution = this.selectedResolution) {
       this.Votes.push(new Vote(this.Countries, resolution));
       const voteData = this.Votes.slice(-1)[0];
       let result = "";

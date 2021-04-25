@@ -8,6 +8,17 @@ export default class Labor {
   }
 
   calculateCountryAtt(country) {
-    return country.getInitScriptAtt(this.title) + country.attToRussia;
+    let result = country.getInitScriptAtt(this.title) + country.attToRussia;
+    country.countryAgreements.forEach((agreement) => {
+      switch (agreement) {
+        case "apposition":
+          result += 5;
+          break;
+        case "borders":
+          result += 1;
+          break;
+      }
+    });
+    return result;
   }
 }

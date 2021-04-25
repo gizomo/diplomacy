@@ -15,6 +15,16 @@ export default class Carbon {
     if (this.emission > 0.04) {
       result += 5;
     }
+    country.countryAgreements.forEach((agreement) => {
+      switch (agreement) {
+        case "atom":
+          result += 5;
+          break;
+        case "emergency":
+          result += 2;
+          break;
+      }
+    });
     return result;
   }
 

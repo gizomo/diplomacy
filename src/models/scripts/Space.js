@@ -18,9 +18,19 @@ export default class Space {
     return isToday ? 2 : 1;
   }
   calculateCountryAtt(country) {
-    return (
+    let result =
       country.getInitScriptAtt(this.title) +
-      country.attToRussia * this.spaceDaybonus()
-    );
+      country.attToRussia * this.spaceDaybonus();
+    country.countryAgreements.forEach((agreement) => {
+      switch (agreement) {
+        case "space":
+          result += 3;
+          break;
+        case "weaponse":
+          result += 2;
+          break;
+      }
+    });
+    return result;
   }
 }
