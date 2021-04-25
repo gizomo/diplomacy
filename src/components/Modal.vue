@@ -7,7 +7,7 @@
             <img
               v-if="modalContent.imageTitle"
               class="flag"
-              :src="require('../assets/flags/UN.svg')"
+              :src="require('../../public/images/flags/UN.svg')"
               alt="ООН"
             />
             <h2>{{ modalContent.title }}</h2>
@@ -58,7 +58,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.modalContent.imageTitle);
     const vm = this;
     // document.body.style.overflow = "hidden";
     document.addEventListener("click", function (item) {

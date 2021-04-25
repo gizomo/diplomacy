@@ -15,6 +15,19 @@ export default class Bitcoin {
     if (this.btcPrice > 50000) {
       result += 5;
     }
+    country.countryAgreements.forEach((agreement) => {
+      switch (agreement) {
+        case "money":
+          result += 2;
+          break;
+        case "duties":
+          result += 2;
+          break;
+        case "sanctions":
+          result -= 5;
+          break;
+      }
+    });
     return result;
   }
 

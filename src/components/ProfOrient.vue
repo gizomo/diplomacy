@@ -1,7 +1,10 @@
 <template>
   <div class="prof-orient-intro window" v-if="isInfo">
     <h1 class="prof-orient-title">Выбери свою профессию будущего</h1>
-    <img class="prof-orient-image" :src="require('../assets/fipn.png')" />
+    <img
+      class="prof-orient-image"
+      :src="require('../../public/images/fipn.png')"
+    />
     <p class="prof-orient-info">
       Приложение разработано на основе материалов
       <a href="https://new.atlas100.ru/">"Атласа новых профессий"</a>, который

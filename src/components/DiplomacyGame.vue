@@ -39,7 +39,11 @@
 
   <modal v-if="isResolutionVisible" @closeModal="closeModalWindow">
     <template #header>
-      <img class="flag" :src="require('../assets/flags/UN.svg')" alt="ООН" />
+      <img
+        class="flag"
+        :src="require('../../public/images/flags/UN.svg')"
+        alt="ООН"
+      />
       <h2>Внесите резолюцию на голосование в ООН</h2>
     </template>
     <template #content>
@@ -72,11 +76,11 @@
     <template #content>
       <div class="sourses">
         <div class="spy-stat">
-          <img :src="require('../assets/spy.svg')" />
+          <img :src="require('../../public/images/spy.svg')" />
           <p>Осталось шпионов: {{ spies }}</p>
         </div>
         <div class="hacker-stat">
-          <img :src="require('../assets/hacker.svg')" />
+          <img :src="require('../../public/images/hacker.svg')" />
           <p>Осталось кибер-атак: {{ hackers }}</p>
         </div>
       </div>

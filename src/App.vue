@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="image">
-          <img :src="require('./assets/fipn.png')" />
+          <img :src="require('../public/images/fipn.png')" />
         </div>
       </div>
       <div class="game window">
@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class="image">
-          <img :src="require('./assets/inter.png')" />
+          <img :src="require('../public/images/inter.png')" />
         </div>
       </div>
     </div>

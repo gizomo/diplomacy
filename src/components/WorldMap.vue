@@ -12,7 +12,7 @@
         v-tooltip="'Внедрить шпиона (осталось: ' + spies + ')'"
         @click="sentSpy"
       >
-        <img :src="require('../assets/spy.svg')" />
+        <img :src="require('../../public/images/spy.svg')" />
       </button>
       <button
         class="hacker"
@@ -25,11 +25,13 @@
         v-tooltip="'Совершить кибер-атаку (осталось: ' + hackers + ')'"
         @click="cyberAtack"
       >
-        <img :src="require('../assets/hacker.svg')" />
+        <img :src="require('../../public/images/hacker.svg')" />
       </button>
       <img
         class="flag"
-        :src="require('../assets/flags/' + selectedCountry.id + '.svg')"
+        :src="
+          require('../../public/images/flags/' + selectedCountry.id + '.svg')
+        "
         :alt="selectedCountry.title"
       />
       <h2 class="country-name">{{ selectedCountry.title }}</h2>
