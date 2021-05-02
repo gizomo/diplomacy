@@ -1,7 +1,7 @@
 <template>
   <div class="game-intro window" v-if="isIntro">
-    <h1 class="game-title">Я международник</h1>
-    <h2 class="game-subtitle">
+    <h1 class="game-title center">Я международник</h1>
+    <h2 class="game-subtitle center">
       Открой для себя особенности современной мировой политики
     </h2>
     <hr />
@@ -69,23 +69,85 @@
     </template>
   </modal>
 
+  <modal v-if="isRussiaVote" @closeModal="closeModalWindow">
+    <template #header>
+      <img
+        class="flag"
+        :src="require('../../public/images/flags/UN.svg')"
+        alt="ООН"
+      />
+      <h2>Голосование в ООН</h2>
+    </template>
+    <template #content>
+      <div class="russia-vote center">
+        <p>Повестка голосования:</p>
+        <h3>{{ selectedResolution.optionName }}</h3>
+        <div class="russia-vote-options">
+          <label>
+            <input type="radio" v-model="russiaVote" :value="1" />
+            За
+          </label>
+          <label>
+            <input type="radio" v-model="russiaVote" :value="-1" />
+            Против
+          </label>
+        </div>
+      </div>
+    </template>
+    <template #footer>
+      <button
+        v-if="russiaVote == 0"
+        class="modal-footer-button"
+        @click="voteForRussia(russiaVote)"
+      >
+        Воздержаться
+      </button>
+      <button
+        v-else
+        class="modal-footer-button"
+        @click="voteForRussia(russiaVote)"
+      >
+        Проголосовать
+      </button>
+    </template>
+  </modal>
+
+  <modal
+    v-if="isVoteResults"
+    :modalContent="modalObject"
+    @closeModal="closeModalWindow"
+  >
+    <template #header>
+      <img
+        class="flag"
+        :src="require('../../public/images/flags/UN.svg')"
+        alt="ООН"
+      />
+      <h2>Итоги голосования в ООН</h2>
+    </template>
+    <template #footer>
+      <button v-if="currentStage == 10" @click="finalResults()">Закрыть</button>
+      <button v-else @click="closeModalWindow">Закрыть</button>
+    </template>
+  </modal>
+
   <modal v-if="isStatVisible" @closeModal="closeModalWindow">
     <template #header>
       <h2>Статистика игры</h2>
     </template>
     <template #content>
       <div class="sourses">
-        <div class="spy-stat">
+        <div class="spy-stat center">
           <img :src="require('../../public/images/spy.svg')" />
           <p>Осталось шпионов: {{ spies }}</p>
         </div>
-        <div class="hacker-stat">
+        <div class="hacker-stat center">
           <img :src="require('../../public/images/hacker.svg')" />
           <p>Осталось кибер-атак: {{ hackers }}</p>
         </div>
       </div>
       <hr />
-      <h3 class="stat-resolutions-title">Резолюции</h3>
+      <h3 class="center">Резолюции</h3>
       <ul class="vote-results" v-if="Votes.length">
         <li v-for="(vote, index) in Votes" :key="index">
           <p class="vote-title" @click="votesMore[index] = !votesMore[index]">
@@ -117,9 +179,26 @@
           </div>
         </li>
       </ul>
-      <p class="no-votes" v-else>Резолюции еще не выносились на голосование.</p>
+      <p class="center" v-else>Резолюции еще не выносились на голосование.</p>
     </template>
     <template #footer></template>
+  </modal>
+
+  <modal v-if="isFinalResults" @closeModal="closeModalWindow">
+    <template #header>
+      <h2>Игра закончена</h2>
+    </template>
+    <template #content>
+      <h3 class="center">Итоги голосований за резолюции ООН</h3>
+      <p v-for="(vote, index) in Votes" :key="index" class="vote-title">
+        {{ vote.resolution }}
+        <span v-if="vote.result" :class="{ ayes: vote.result }"> Принята </span>
+        <span v-else class="nays">Не принята</span>
+      </p>
+    </template>
+    <template #footer>
+      <button class="end-game" @click="endGame">Выйти из игры</button>
+    </template>
   </modal>
 
   <modal
@@ -159,28 +238,40 @@ export default {
       Scripts: [],
       Events: [],
       Votes: [],
+      Notifications: useNotificationStore().notifications,
 
       stages: 9,
       currentStage: 1,
+
+      isVoteResults: false,
+      isFinalResults: false,
+      isResolutionVisible: false,
+      selectedResolution: null,
+
+      isRussiaVote: false,
+      russiaVote: 0,
 
       isStatVisible: false,
       votesMore: [],
       spies: 0,
       hackers: 0,
 
-      isResolutionVisible: false,
-      selectedResolution: null,
-
       isModalVisible: false,
       modalObject: {
-        imageTitle: Boolean,
-        title: String,
-        body: String,
-        button: String,
+        imageTitle: false,
+        title: "",
+        body: "",
+        button: "",
       },
     };
   },
   methods: {
+    closeModalWindow() {
+      this.isModalVisible = false;
+      this.isVoteResults = false;
+      this.isResolutionVisible = false;
+      this.isStatVisible = false;
+    },
     openRules() {
       this.modalObject.title = "Правила игры";
       this.modalObject.body = GameData.rules;
@@ -208,17 +299,28 @@ export default {
       });
     },
     endStage() {
+      this.removeNotifications();
       if (this.currentStage % 3 == 0) {
         if (this.selectedResolution) {
           this.calcAttitude();
-          this.vote();
-          this.selectedResolution = null;
+          this.isRussiaVote = true;
         }
       }
       this.$refs.map.clearActions();
       this.currentStage++;
     },
+    finalResults() {
+      this.isVoteResults = false;
+      this.isFinalResults = true;
+    },
     endGame() {
+      this.removeNotifications();
+      this.Countries = [];
+      this.Scripts = [];
+      this.Events = [];
+      this.Votes = [];
+      this.currentStage = 1;
+      this.isFinalResults = false;
       this.isIntro = true;
     },
     filterScripts(active, passed) {
@@ -238,13 +340,21 @@ export default {
       this.Countries.forEach((country) =>
         country.setActualScriptAtt(
           resolution.title,
-          resolution.calculateCountryAtt(country)
+          resolution.calculateCountryAtt(country, this.Events)
         )
       );
     },
     initResolution() {
       this.calcAttitude();
       this.isResolutionVisible = false;
+    },
+    voteForRussia(vote) {
+      let rus = this.Countries.find((country) => country.id == "RU");
+      rus.setActualScriptAtt(this.selectedResolution.title, vote);
+      this.russiaVote = 0;
+      this.isRussiaVote = false;
+      this.vote();
+      this.selectedResolution = null;
     },
     vote(resolution = this.selectedResolution) {
       this.Votes.push(new Vote(this.Countries, resolution));
@@ -267,16 +377,8 @@ export default {
       <p><span class="abstainers">Воздержалось:</span> ${voteData.abstainers.length}</p>
       </div>
       ${result}`;
-      this.modalObject.imageTitle = true;
-      this.modalObject.title = "Итоги голосования в ООН";
       this.modalObject.body = voteResults;
-      this.modalObject.button = "Закрыть";
-      this.isModalVisible = true;
-    },
-    closeModalWindow() {
-      this.isModalVisible = false;
-      this.isResolutionVisible = false;
-      this.isStatVisible = false;
+      this.isVoteResults = true;
     },
     setEvent(gameEvent) {
       const notification = {
@@ -287,7 +389,7 @@ export default {
           manually: true,
           automatically: true,
         },
-        duration: 10000,
+        duration: 20000,
         showDurationProgress: true,
         appearance: "light",
       };
@@ -299,11 +401,19 @@ export default {
         .sort(() => 0.5 - Math.random())
         .slice(0, qty)
         .forEach((filteredE) => {
-          this.Events[
-            this.Events.findIndex((n) => n.name == filteredE.name)
-          ].activateEvent();
+          // this.Events[
+          //   this.Events.findIndex((n) => n.name == filteredE.name)
+          // ].activateEvent();
+          filteredE.activateEvent();
           this.setEvent(filteredE);
         });
+    },
+    removeNotifications() {
+      if (!Object.keys(this.Notifications).length == 0) {
+        for (let id in this.Notifications) {
+          useNotificationStore().unsetNotification(id);
+        }
+      }
     },
   },
   watch: {
@@ -311,7 +421,7 @@ export default {
       if ((stage + 1) % 3 == 0) {
         this.isResolutionVisible = true;
       }
-      this.launchEvents(3);
+      this.launchEvents(2);
     },
   },
 };
@@ -323,10 +433,6 @@ export default {
 }
 .game-title {
   font-size: 3rem;
-}
-.game-title,
-.game-subtitle {
-  text-align: center;
 }
 .game-subtitle {
   font-weight: 300;
@@ -360,16 +466,11 @@ export default {
   display: flex;
   justify-content: space-around;
 }
-.hacker-stat,
-.spy-stat {
-  text-align: center;
-}
 .hacker-stat img,
 .spy-stat img {
   height: 3rem;
 }
-.stat-resolutions-title,
-.no-votes {
+.center {
   text-align: center;
 }
 .vote-results {

@@ -81,6 +81,7 @@ export default {
   left: 0;
   height: 100%;
   background-color: rgba(64, 64, 64, 0.4);
+  z-index: 199;
 }
 .modal {
   position: absolute;
@@ -93,6 +94,7 @@ export default {
   background-color: #fafcff;
   border-radius: 1.5rem;
   box-shadow: 0px 25px 20px rgba(2, 100, 242, 0.2);
+  z-index: 200;
 }
 .modal-header {
   display: flex;

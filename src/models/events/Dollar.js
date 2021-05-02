@@ -4,7 +4,7 @@ export default class Dollar {
   constructor() {
     this.name = "dollar";
     this.description =
-      "Ряд стран отказалось от доллара США при заключении междуанродных сделок в пользу своих национальных валют.";
+      "Ряд стран отказалось использовать доллар США при заключении междуанродных сделок.";
     this.active = false;
     this.countries = [];
     this.excludedCountries = ["RU", "US"];
