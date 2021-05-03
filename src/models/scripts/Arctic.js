@@ -10,8 +10,8 @@ export default class Arctic {
 
   calculateCountryAtt(country) {
     let result = country.getInitScriptAtt(this.title) + country.attToRussia;
-    country.countryAgreements.forEach((agreement) => {
-      switch (agreement) {
+    country.countryRelations.forEach((relation) => {
+      switch (relation) {
         case "apposition":
           result += 5;
           break;

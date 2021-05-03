@@ -22,6 +22,10 @@ export default class WorkignDay {
     }
   }
 
+  isActive() {
+    return this.countries.length > 0;
+  }
+
   getRandomCountries(qty) {
     return WorldMap.countries
       .map((country) => {

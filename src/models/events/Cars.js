@@ -9,4 +9,8 @@ export default class Cars {
   activateEvent() {
     this.active = true;
   }
+
+  isActive() {
+    return this.active;
+  }
 }

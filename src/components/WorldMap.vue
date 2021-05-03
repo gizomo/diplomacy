@@ -79,30 +79,30 @@
         </p>
       </div>
       <hr />
-      <div class="agreements-list">
+      <div class="relations-list">
         <label
-          class="agreement-title"
-          v-for="(agreement, index) in filteredAgreements()"
+          class="relation-title"
+          v-for="(relation, index) in filteredRelations()"
           :key="index"
         >
           <input
             type="radio"
-            v-model="selectedAgreement"
-            :value="agreement"
-            :disabled="agreementsStatus()"
+            v-model="selectedRelation"
+            :value="relation"
+            :disabled="relationsStatus()"
           />
-          {{ agreement.title }}
+          {{ relation.title }}
         </label>
       </div>
-      <p class="agreement-deny" v-if="agreementsStatus(selectedCountry.id)">
+      <p class="relation-deny" v-if="relationsStatus(selectedCountry.id)">
         Нельзя выполнить более одного действия за ход с одной и той же страной.
       </p>
     </template>
     <template #footer>
       <button
-        v-if="selectedAgreement && !agreementsStatus(selectedCountry.id)"
+        v-if="selectedRelation && !relationsStatus(selectedCountry.id)"
         class="modal-footer-button"
-        @click="initAgreement"
+        @click="initRelation"
       >
         Продолжить
       </button>
@@ -133,9 +133,9 @@ export default {
       hackers: 10,
       cyberAtacks: [],
 
-      agreements: GameData.agreements,
-      selectedAgreement: null,
-      concludedAgreements: [],
+      relations: GameData.relations,
+      selectedRelation: null,
+      concludedRelations: [],
 
       selectedCountry: null,
 
@@ -158,7 +158,7 @@ export default {
       const vm = this;
       let fillColor = "#fff";
       let opacity = 1;
-      // Colorise Map
+      // Colorise Map by attitude to Russia
       // const country = vm.countries.find((country) => country.id == pathObj.id);
       // if (country.attToRussia > 0) {
       //   fillColor = "#2eb62c";
@@ -179,7 +179,7 @@ export default {
         if (attrs.mapId === "RU") {
           vm.$emit("openStat", { spies: vm.spies, hackers: vm.hackers });
         } else {
-          vm.openAgreementDialog(attrs.mapId);
+          vm.openRelationsDialog(attrs.mapId);
         }
       });
       element.mouseover(function () {
@@ -198,18 +198,18 @@ export default {
         this.node.attributes["fill"].value = vm.hoverCountryColor;
       });
     },
-    openAgreementDialog(countryId) {
+    openRelationsDialog(countryId) {
       this.selectedCountry = this.countries.find(
         (country) => country.id == countryId
       );
       this.isModalVisible = true;
     },
-    agreementsStatus() {
-      return this.concludedAgreements.includes(this.selectedCountry.id);
+    relationsStatus() {
+      return this.concludedRelations.includes(this.selectedCountry.id);
     },
-    filteredAgreements() {
-      return this.agreements.filter((item) => {
-        if (this.selectedCountry.hasAgreement(item.name)) {
+    filteredRelations() {
+      return this.relations.filter((item) => {
+        if (this.selectedCountry.hasRelation(item.name)) {
           return false;
         }
         switch (item.name) {
@@ -233,19 +233,19 @@ export default {
         }
       });
     },
-    initAgreement() {
-      if (!this.selectedCountry.hasAgreement(this.selectedAgreement.name)) {
-        this.selectedCountry.addAgreement(this.selectedAgreement);
-        this.concludedAgreements.push(this.selectedCountry.id);
+    initRelation() {
+      if (!this.selectedCountry.hasRelation(this.selectedRelation.name)) {
+        this.selectedCountry.addRelation(this.selectedRelation);
+        this.concludedRelations.push(this.selectedCountry.id);
       }
       this.closeModalWindow();
     },
     clearActions() {
-      this.concludedAgreements = [];
+      this.concludedRelations = [];
       this.cyberAtacks = [];
     },
     closeModalWindow() {
-      this.selectedAgreement = null;
+      this.selectedRelation = null;
       this.selectedCountry = null;
       this.isModalVisible = false;
     },
@@ -348,14 +348,24 @@ export default {
 .arrows {
   cursor: pointer;
 }
-.agreements-list {
+.relations-list {
   width: 70%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
-.agreement-deny {
+.relation-title {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+.relation-title:hover {
+  background-color: #99fff1;
+  box-shadow: 2px 2px 5px 2px rgba(22, 22, 22, 0.1);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+.relation-deny {
   color: firebrick;
   text-align: center;
 }

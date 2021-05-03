@@ -15,8 +15,8 @@ export default class Bitcoin {
     if (this.btcPrice > 50000) {
       result += 5;
     }
-    country.countryAgreements.forEach((agreement) => {
-      switch (agreement) {
+    country.countryRelations.forEach((relation) => {
+      switch (relation) {
         case "money":
           result += 2;
           break;
@@ -29,11 +29,7 @@ export default class Bitcoin {
       }
     });
     events
-      .filter(
-        (event) =>
-          event.active ||
-          ("countries" in event ? event.countries.length > 0 : false)
-      )
+      .filter((event) => event.isActive())
       .forEach((fevent) => {
         switch (fevent.name) {
           case "dollar":

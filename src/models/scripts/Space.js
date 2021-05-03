@@ -17,12 +17,12 @@ export default class Space {
     };
     return isToday ? 2 : 1;
   }
-  calculateCountryAtt(country) {
+  calculateCountryAtt(country, events) {
     let result =
       country.getInitScriptAtt(this.title) +
       country.attToRussia * this.spaceDaybonus();
-    country.countryAgreements.forEach((agreement) => {
-      switch (agreement) {
+    country.countryRelations.forEach((relation) => {
+      switch (relation) {
         case "space":
           result += 3;
           break;
@@ -31,6 +31,20 @@ export default class Space {
           break;
       }
     });
+    events
+      .filter((event) => event.isActive())
+      .forEach((fevent) => {
+        switch (fevent.name) {
+          case "sanctions":
+            if (fevent.countries.includes(country.id)) {
+              result += 5;
+            }
+            break;
+          case "space-x":
+            result += 3;
+            break;
+        }
+      });
     return result;
   }
 }

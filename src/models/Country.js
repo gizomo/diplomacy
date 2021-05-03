@@ -3,9 +3,7 @@ export default class Country {
     this.id = countryData.id;
     this.title = countryData.title;
     this.description = "";
-    // this.attToRussia = countryData.attToRussia;
-    this.attToRussia = this.getRandom(10);
-    // this.initScriptsAtt = countryData.initScriptsAtt;
+    this.attToRussia = countryData.atr;
     this.initScriptsAtt = this.initScripts(scripts);
     // this.initScriptsAtt = [
     //   { name: "bitcoin", value: this.getRandom(10) },
@@ -15,7 +13,7 @@ export default class Country {
     //   { name: "labor", value: this.getRandom(10) },
     // ];
     this.actualScriptsAtt = [];
-    this.countryAgreements = [];
+    this.countryRelations = [];
     this.inteligence = false;
   }
   getRandom(max) {
@@ -36,15 +34,15 @@ export default class Country {
     );
     return attitude.value;
   }
-  hasAgreement(agreement) {
-    return this.countryAgreements.includes(agreement);
+  hasRelation(relation) {
+    return this.countryRelations.includes(relation);
   }
-  addAgreement(agreement) {
-    this.countryAgreements.push(agreement.name);
-    if (agreement.score >= 0) {
+  addRelation(relation) {
+    this.countryRelations.push(relation.name);
+    if (relation.score >= 0) {
       this.attToRussia++;
     }
-    if (agreement.score < 0) {
+    if (relation.score < 0) {
       this.attToRussia--;
     }
   }

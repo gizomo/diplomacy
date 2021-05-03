@@ -10,13 +10,13 @@ export default class Carbon {
     this.getCO2Emission();
   }
 
-  calculateCountryAtt(country) {
+  calculateCountryAtt(country, events) {
     let result = country.getInitScriptAtt(this.title) + country.attToRussia;
     if (this.emission > 0.04) {
       result += 5;
     }
-    country.countryAgreements.forEach((agreement) => {
-      switch (agreement) {
+    country.countryRelations.forEach((relation) => {
+      switch (relation) {
         case "atom":
           result += 5;
           break;
@@ -25,6 +25,20 @@ export default class Carbon {
           break;
       }
     });
+    events
+      .filter((event) => event.isActive())
+      .forEach((fevent) => {
+        switch (fevent.name) {
+          case "opec":
+            if (!fevent.countries.includes(country.id)) {
+              result += 5;
+            }
+            break;
+          case "cars":
+            result += 2;
+            break;
+        }
+      });
     return result;
   }
 

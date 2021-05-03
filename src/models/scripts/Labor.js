@@ -7,10 +7,10 @@ export default class Labor {
     this.passed = false;
   }
 
-  calculateCountryAtt(country) {
+  calculateCountryAtt(country, events) {
     let result = country.getInitScriptAtt(this.title) + country.attToRussia;
-    country.countryAgreements.forEach((agreement) => {
-      switch (agreement) {
+    country.countryRelations.forEach((relation) => {
+      switch (relation) {
         case "apposition":
           result += 5;
           break;
@@ -19,6 +19,20 @@ export default class Labor {
           break;
       }
     });
+    events
+      .filter((event) => event.isActive())
+      .forEach((fevent) => {
+        switch (fevent.name) {
+          case "working-day":
+            if (fevent.countries.includes(country.id)) {
+              result += 5;
+            }
+            break;
+          case "economic-crysis":
+            result -= 3;
+            break;
+        }
+      });
     return result;
   }
 }

@@ -286,14 +286,17 @@ export default {
     },
     startGame() {
       this.isIntro = false;
+      // Generate Sripts
       const scriptLauncher = new ScriptsCreator();
       Array.prototype.push.apply(
         this.Scripts,
         scriptLauncher.createAllScripts()
       );
+      // Generate Events
       const eventLauncher = new EventsCreator();
       Array.prototype.push.apply(this.Events, eventLauncher.createAllEvents());
       this.launchEvents(2);
+      // Generate Countries
       WorldMapData.countries.forEach((countryData) => {
         this.Countries.push(new Country(countryData, this.Scripts));
       });
@@ -330,7 +333,7 @@ export default {
             ["CN", "FR", "GB", "US"].includes(state.id)
           );
           script.active = nuclearStates.every((nuclear) =>
-            nuclear.hasAgreement("nuclear")
+            nuclear.hasRelation("nuclear")
           );
         }
         return script.active == active && script.passed == passed;
@@ -487,6 +490,9 @@ export default {
 }
 .vote-title:hover {
   background-color: #99fff1;
+  box-shadow: 2px 2px 5px 2px rgba(22, 22, 22, 0.1);
+  border-radius: 0.25rem;
+  cursor: pointer;
 }
 .vote-results-more {
   max-height: 20rem;

@@ -9,4 +9,8 @@ export default class EconomicCrysis {
   activateEvent() {
     this.active = true;
   }
+
+  isActive() {
+    return this.active;
+  }
 }

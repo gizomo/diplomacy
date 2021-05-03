@@ -12,8 +12,8 @@ export default class Nuclear {
     if (["CN", "FR", "GB", "US"].includes(country.id)) {
       return 10;
     } else {
-      country.countryAgreements.forEach((agreement) => {
-        switch (agreement) {
+      country.countryRelations.forEach((relation) => {
+        switch (relation) {
           case "atom":
             result += 5;
             break;
