@@ -15,7 +15,12 @@
     </div>
   </div>
   <div class="game-wrapper" v-if="!isIntro">
-    <world-map :countries="Countries" @openStat="openStatDialog" ref="map" />
+    <world-map
+      :countries="Countries"
+      :relations="Relations"
+      @openStat="openStatDialog"
+      ref="map"
+    />
     <div class="stages">
       <p
         v-for="stage in stages"
@@ -221,6 +226,7 @@ import Country from "../models/Country";
 import Vote from "../models/Vote";
 import ScriptsCreator from "../models/ScriptsCreator";
 import EventsCreator from "../models/EventsCreator";
+import RelationsCreator from "../models/RelationsCreator";
 
 export default {
   name: "DiplomacyGame",
@@ -235,6 +241,7 @@ export default {
       intro: GameData.intro,
 
       Countries: [],
+      Relations: [],
       Scripts: [],
       Events: [],
       Votes: [],
@@ -295,11 +302,16 @@ export default {
       // Generate Events
       const eventLauncher = new EventsCreator();
       Array.prototype.push.apply(this.Events, eventLauncher.createAllEvents());
-      this.launchEvents(2);
       // Generate Countries
       WorldMapData.countries.forEach((countryData) => {
         this.Countries.push(new Country(countryData, this.Scripts));
       });
+      // Generate Relations
+      const relationsLauncher = new RelationsCreator();
+      Array.prototype.push.apply(
+        this.Relations,
+        relationsLauncher.createAllRelations()
+      );
     },
     endStage() {
       this.removeNotifications();

@@ -112,7 +112,6 @@
 
 <script>
 import WorldMapData from "../assets/worldRussiaCrimeaLow";
-import GameData from "../assets/gameData";
 import Modal from "./Modal";
 
 export default {
@@ -122,6 +121,7 @@ export default {
   },
   props: {
     countries: Array,
+    relations: Array,
   },
   emits: ["openStat"],
   data() {
@@ -133,7 +133,6 @@ export default {
       hackers: 10,
       cyberAtacks: [],
 
-      relations: GameData.relations,
       selectedRelation: null,
       concludedRelations: [],
 

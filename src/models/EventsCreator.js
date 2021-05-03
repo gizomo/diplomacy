@@ -1,5 +1,3 @@
-// import Bitcoin from "./scripts/Bitcoin";
-// import Space from "./scripts/Space";
 import * as EventModules from "./events";
 
 export default class EventsCreator {
