@@ -395,7 +395,16 @@ export default {
       this.modalObject.body = voteResults;
       this.isVoteResults = true;
     },
-    setEvent(gameEvent) {
+    launchEvents(qty) {
+      this.Events.filter((eItem) => eItem.active == false)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, qty)
+        .forEach((filteredE) => {
+          filteredE.activateEvent();
+          this.eventNotify(filteredE);
+        });
+    },
+    eventNotify(gameEvent) {
       const notification = {
         message: gameEvent.description,
         type: "info",
@@ -410,18 +419,6 @@ export default {
       };
       const { setNotification } = useNotificationStore();
       setNotification(notification);
-    },
-    launchEvents(qty) {
-      this.Events.filter((eItem) => eItem.active == false)
-        .sort(() => 0.5 - Math.random())
-        .slice(0, qty)
-        .forEach((filteredE) => {
-          // this.Events[
-          //   this.Events.findIndex((n) => n.name == filteredE.name)
-          // ].activateEvent();
-          filteredE.activateEvent();
-          this.setEvent(filteredE);
-        });
     },
     removeNotifications() {
       if (!Object.keys(this.Notifications).length == 0) {

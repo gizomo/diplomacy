@@ -11,7 +11,6 @@ export default class Dollar {
   }
 
   activateEvent() {
-    Array.prototype.push.apply(this.excludedCountries, this.countries);
     if (this.countries.length) {
       Array.prototype.push.apply(
         this.countries,
@@ -31,7 +30,11 @@ export default class Dollar {
       .map((country) => {
         return country.id;
       })
-      .filter((country) => !this.excludedCountries.includes(country))
+      .filter(
+        (country) =>
+          !this.countries.includes(country) &&
+          !this.excludedCountries.includes(country)
+      )
       .sort(() => 0.5 - Math.random())
       .slice(0, qty);
   }

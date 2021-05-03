@@ -4,5 +4,27 @@ export default class Space {
     this.title =
       "Заключить соглашение о сотрудничестве в области освоения космоса";
     this.score = 7;
+    this.countries = [
+      "AM",
+      "AR",
+      "BR",
+      "BY",
+      "DE",
+      "ES",
+      "FR",
+      "GF",
+      "ID",
+      "KZ",
+      "MY",
+      "NI",
+      "TR",
+      "US",
+      "VE",
+      "ZA",
+    ];
+  }
+
+  isAvailable(country) {
+    return this.countries.includes(country.id);
   }
 }

@@ -30,7 +30,7 @@ export default class Country {
   }
   getInitScriptAtt(scriptName) {
     const attitude = this.initScriptsAtt.find(
-      (attitude) => attitude.name === scriptName
+      (attitude) => attitude.name == scriptName
     );
     return attitude.value;
   }
@@ -51,7 +51,7 @@ export default class Country {
   }
   setActualScriptAtt(scriptName, scriptValue) {
     const attIndex = this.actualScriptsAtt.findIndex(
-      (attitude) => attitude.name === scriptName
+      (attitude) => attitude.name == scriptName
     );
     if (attIndex < 0) {
       this.actualScriptsAtt.push({ name: scriptName, value: scriptValue });

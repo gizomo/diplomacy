@@ -3,5 +3,32 @@ export default class Atom {
     this.name = "atom";
     this.title = "Заключить соглашение о строительстве АЭС";
     this.score = 5;
+    this.countries = [
+      "AE",
+      "AM",
+      "BD",
+      "BE",
+      "BG",
+      "CN",
+      "CZ",
+      "EG",
+      "FI",
+      "IN",
+      "IR",
+      "JO",
+      "HU",
+      "KW",
+      "OM",
+      "QA",
+      "SA",
+      "SK",
+      "TR",
+      "UZ",
+      "VE",
+    ];
+  }
+
+  isAvailable(country) {
+    return this.countries.includes(country.id);
   }
 }
