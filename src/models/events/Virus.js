@@ -19,7 +19,7 @@ export default class Virus {
   }
 
   activateEvent(relations, fillColor) {
-    let virus = this.viruses.sort(() => 0.5 - Math.random()).slice(0, 1)[0];
+    let virus = this.viruses.sort(() => 0.5 - Math.random()).splice(0, 1)[0];
     this.description = virus.description;
     if (this.countries.length) {
       Array.prototype.push.apply(this.countries, virus.countries);

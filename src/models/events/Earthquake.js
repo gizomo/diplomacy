@@ -31,7 +31,7 @@ export default class Earthquake {
   activateEvent(relations, fillColor) {
     let earthquake = this.earthquakes
       .sort(() => 0.5 - Math.random())
-      .slice(0, 1)[0];
+      .splice(0, 1)[0];
     this.description = earthquake.description;
     if (this.countries.length) {
       Array.prototype.push.apply(this.countries, earthquake.countries);

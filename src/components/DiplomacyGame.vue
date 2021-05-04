@@ -341,6 +341,7 @@ export default {
     endGame() {
       this.removeNotifications();
       this.Countries = [];
+      this.Relations = [];
       this.Scripts = [];
       this.Events = [];
       this.Votes = [];

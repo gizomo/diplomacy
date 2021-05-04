@@ -31,7 +31,7 @@ export default class Conflict {
   activateEvent(relations, fillColor) {
     let conflict = this.conflicts
       .sort(() => 0.5 - Math.random())
-      .slice(0, 1)[0];
+      .splice(0, 1)[0];
     this.description = conflict.description;
     if (this.countries.length) {
       Array.prototype.push.apply(this.countries, conflict.countries);

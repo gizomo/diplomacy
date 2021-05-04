@@ -24,7 +24,7 @@ export default class Flood {
   }
 
   activateEvent(relations, fillColor) {
-    let flood = this.floods.sort(() => 0.5 - Math.random()).slice(0, 1)[0];
+    let flood = this.floods.sort(() => 0.5 - Math.random()).splice(0, 1)[0];
     this.description = flood.description;
     if (this.countries.length) {
       Array.prototype.push.apply(this.countries, flood.countries);
