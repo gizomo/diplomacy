@@ -216,6 +216,16 @@
   <vue-notification-list position="top-right"></vue-notification-list>
 </template>
 <script>
+Array.prototype.shuffle = function () {
+  return this.map(function (n) {
+    return [Math.random(), n];
+  })
+    .sort()
+    .map(function (n) {
+      return n[1];
+    });
+};
+
 import { useNotificationStore } from "@dafcoe/vue-notification";
 import "@dafcoe/vue-notification/dist/vue-notification.css";
 import Modal from "./Modal";
@@ -397,10 +407,11 @@ export default {
     },
     launchEvents(qty) {
       this.Events.filter((eItem) => eItem.active == false)
-        .sort(() => 0.5 - Math.random())
+        // .sort(() => 0.5 - Math.random())
+        .shuffle()
         .slice(0, qty)
         .forEach((filteredE) => {
-          filteredE.activateEvent();
+          filteredE.activateEvent(this.Relations, this.$refs.map.fillColor);
           this.eventNotify(filteredE);
         });
     },
@@ -433,7 +444,7 @@ export default {
       if ((stage + 1) % 3 == 0) {
         this.isResolutionVisible = true;
       }
-      this.launchEvents(2);
+      this.launchEvents(4);
     },
   },
 };

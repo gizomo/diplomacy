@@ -197,6 +197,13 @@ export default {
         this.node.attributes["fill"].value = vm.hoverCountryColor;
       });
     },
+    fillColor(color, countries) {
+      this.svgContainer.each(function () {
+        if (countries.includes(this.attr("mapId"))) {
+          this.fill(color);
+        }
+      });
+    },
     openRelationsDialog(countryId) {
       this.selectedCountry = this.countries.find(
         (country) => country.id == countryId
@@ -211,25 +218,7 @@ export default {
         if (this.selectedCountry.hasRelation(item.name)) {
           return false;
         }
-        switch (item.name) {
-          case "nuclear":
-            return ["CN", "FR", "GB", "RU", "US"].includes(
-              this.selectedCountry.id
-            );
-          case "apposition":
-            return (
-              this.selectedCountry.inteligence &&
-              this.selectedCountry.attToRussia <= item.score
-            );
-          default:
-            if (item.score >= 1) {
-              return this.selectedCountry.attToRussia >= item.score;
-            } else if (item.score <= -1) {
-              return this.selectedCountry.attToRussia <= item.score;
-            } else {
-              return true;
-            }
-        }
+        return item.isAvailable(this.selectedCountry);
       });
     },
     initRelation() {

@@ -1,26 +1,28 @@
 import WorldMap from "../../assets/worldRussiaCrimeaLow.json";
 
-export default class Dollar {
+export default class PoliticalCrysis {
   constructor() {
-    this.name = "dollar";
+    this.name = "political-crysis";
     this.description = "";
     this.suffix =
-      " отказались использовать доллар США при заключении междуанродных сделок.";
+      " объявили о чрезвычайном положении в связи с политическим кризисом. Оппозиционные силы в этих странах переходят к активному сопротивлению.";
     this.active = false;
     this.countries = [];
-    this.excludedCountries = ["RU", "US"];
+    this.excludedCountries = ["RU"];
   }
 
   activateEvent(relations) {
-    const genCountries = this.getRandomCountries(this.getRandom(2, 5));
+    const genCountries = this.getRandomCountries(this.getRandom(2, 3));
     if (this.countries.length) {
       Array.prototype.push.apply(this.countries, genCountries);
     } else {
       this.countries = genCountries;
     }
-    relations.find(
-      (relation) => relation.name == "money"
-    ).countries = this.countries;
+    relations.forEach((relation) => {
+      if (relation.name == "apposition" || relation.name == "goverment") {
+        relation.countries = this.countries;
+      }
+    });
     const countriesNames = WorldMap.countries
       .filter((state) => genCountries.includes(state.id))
       .map((s) => {

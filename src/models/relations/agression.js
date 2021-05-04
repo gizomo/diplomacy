@@ -4,4 +4,8 @@ export default class Agression {
     this.title = "Угрожать применением вооруженной силы";
     this.score = -5;
   }
+
+  isAvailable(country) {
+    return country.attToRussia <= this.score;
+  }
 }

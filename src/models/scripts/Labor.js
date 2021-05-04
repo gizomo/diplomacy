@@ -23,7 +23,7 @@ export default class Labor {
       .filter((event) => event.isActive())
       .forEach((fevent) => {
         switch (fevent.name) {
-          case "working-day":
+          case "political-crysis":
             if (fevent.countries.includes(country.id)) {
               result += 5;
             }
