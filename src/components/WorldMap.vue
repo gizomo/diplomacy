@@ -58,17 +58,11 @@
           >
             <span>{{ attitude.title }}</span>
             <span class="attitude-value">
-              <i
-                class="material-icons arrows"
-                @click="changeAtt(attitude, cyberInfluence, -1)"
-              >
+              <i class="material-icons arrows" @click="changeAtt(attitude, -1)">
                 arrow_left
               </i>
               {{ attitude.value }}
-              <i
-                class="material-icons arrows"
-                @click="changeAtt(attitude, cyberInfluence, 1)"
-              >
+              <i class="material-icons arrows" @click="changeAtt(attitude, 1)">
                 arrow_right
               </i>
             </span>
@@ -247,6 +241,11 @@ export default {
         country: this.selectedCountry.id,
         value: 10,
       });
+      const origAtts = this.filteredAttitude().map((att) => {
+        return Object.assign({}, att);
+      });
+      console.log(origAtts);
+      this.selectedCountry["origScriptsAtt"] = [...origAtts];
     },
     filteredAttitude() {
       return this.selectedCountry.initScriptsAtt.filter((attitude) => {
@@ -255,18 +254,29 @@ export default {
         );
       });
     },
-    changeAtt(attitude, cyberInfluence, n) {
-      if (cyberInfluence.value > 0 && cyberInfluence.value <= 10) {
-        switch (n) {
-          case 1:
-            attitude.value++;
-            cyberInfluence.value--;
-            break;
-          case -1:
-            attitude.value--;
-            cyberInfluence.value--;
-            break;
-        }
+    iterateAtt(attitude, n) {
+      switch (n) {
+        case 1:
+          attitude.value++;
+          break;
+        case -1:
+          attitude.value--;
+          break;
+      }
+    },
+    changeAtt(attitude, n) {
+      this.iterateAtt(attitude, n);
+      const origAttitudes = this.selectedCountry.origScriptsAtt;
+      const adsResults = this.filteredAttitude().map((nAtt) => {
+        let one = origAttitudes.find((oAtt) => nAtt.name == oAtt.name);
+        return Math.abs(nAtt.value - one.value);
+      });
+      console.log(adsResults);
+      this.cyberInfluence.value = 10 - adsResults.reduce((a, b) => a + b);
+      if (this.cyberInfluence.value < 0) {
+        n = n * -1;
+        this.iterateAtt(attitude, n);
+        this.cyberInfluence.value = 0;
       }
     },
   },

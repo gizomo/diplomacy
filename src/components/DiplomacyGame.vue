@@ -67,7 +67,7 @@
       <button
         v-if="selectedResolution"
         class="modal-footer-button"
-        @click="closeModalWindow"
+        @click="initPlayerResolution"
       >
         Внести
       </button>
@@ -331,9 +331,9 @@ export default {
     },
     endStage() {
       if (this.currentStage % 3 == 0 && this.selectedResolution) {
-        this.initResolution(this.selectedResolution);
+        this.voteOnResolution(this.selectedResolution);
       } else if ((this.currentStage - 1) % 3 == 0 && this.antiResolution) {
-        this.initResolution(this.antiResolution);
+        this.voteOnResolution(this.antiResolution);
       } else {
         this.nextStage();
       }
@@ -367,9 +367,9 @@ export default {
         );
       });
     },
-    initResolution(resolution) {
-      this.calcAttitude(resolution);
-      this.isRussiaVote = true;
+    initPlayerResolution() {
+      this.calcAttitude(this.selectedResolution);
+      this.isResolutionVisible = false;
     },
     calcAttitude(resolution) {
       this.Countries.forEach((country) =>
@@ -378,6 +378,10 @@ export default {
           resolution.calculateCountryAtt(country, this.Events)
         )
       );
+    },
+    voteOnResolution(resolution) {
+      this.calcAttitude(resolution);
+      this.isRussiaVote = true;
     },
     voteForRussia(vote, resolution) {
       let rus = this.Countries.find((country) => country.id == "RU");
@@ -468,14 +472,16 @@ export default {
       }
       if (stage % 3 == 0 && stage != 9) {
         // Introduce AI resolution
-        this.antiResolution = this.filterScripts("anti", true, false)
+        this.antiResolution = this.filterScripts("anti", false, false)
           .shuffle()
           .splice(0, 1)[0];
         if (this.antiResolution) {
+          this.antiResolution.active = true;
+          this.calcAttitude(this.antiResolution);
           this.modalObject.title =
             "На голосование ООН была предложена резолюция.";
           this.modalObject.imageTitle = true;
-          this.modalObject.body = `<div style="text-align: center"><h3>${this.antiResolution.optionName}</h3><p>Голосование пройдет через два хода.</p></div>`;
+          this.modalObject.body = `<div style="text-align: center"><h4>${this.antiResolution.optionName}</h4><p>Голосование пройдет через два хода.</p></div>`;
           this.isModalVisible = true;
         }
       }

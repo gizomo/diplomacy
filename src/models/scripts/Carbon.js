@@ -5,7 +5,7 @@ export default class Carbon {
     this.optionName =
       "Запрет производства и потребления углеводородных видов топлива";
     this.type = "anti";
-    this.active = true;
+    this.active = false;
     this.passed = false;
     this.emission = 0;
     this.getCO2Emission();
@@ -14,15 +14,15 @@ export default class Carbon {
   calculateCountryAtt(country, events) {
     let result = country.getInitScriptAtt(this.title) + country.attToRussia;
     if (this.emission > 0.04) {
-      result += 5;
+      result += 3;
     }
     country.countryRelations.forEach((relation) => {
       switch (relation) {
         case "atom":
-          result += 5;
+          result -= 2;
           break;
         case "emergency":
-          result += 2;
+          result -= 5;
           break;
       }
     });
@@ -31,11 +31,11 @@ export default class Carbon {
       .forEach((fevent) => {
         switch (fevent.name) {
           case "oil-spill":
-            result += 5;
+            result += 3;
             break;
           case "opec":
             if (!fevent.countries.includes(country.id)) {
-              result += 3;
+              result -= 5;
             }
             break;
           case "cars":
