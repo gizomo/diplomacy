@@ -3,6 +3,7 @@ export default class Labor {
     this.title = "labor";
     this.description = "";
     this.optionName = "Установить шести часовой рабочий день";
+    this.type = "player";
     this.active = true;
     this.passed = false;
   }

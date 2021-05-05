@@ -4,7 +4,8 @@ export default class Carbon {
     this.description = "";
     this.optionName =
       "Запрет производства и потребления углеводородных видов топлива";
-    this.active = false;
+    this.type = "anti";
+    this.active = true;
     this.passed = false;
     this.emission = 0;
     this.getCO2Emission();
@@ -29,9 +30,12 @@ export default class Carbon {
       .filter((event) => event.isActive())
       .forEach((fevent) => {
         switch (fevent.name) {
+          case "oil-spill":
+            result += 5;
+            break;
           case "opec":
             if (!fevent.countries.includes(country.id)) {
-              result += 5;
+              result += 3;
             }
             break;
           case "cars":

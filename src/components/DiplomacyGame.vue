@@ -55,7 +55,7 @@
       <div class="resolutions-list">
         <label
           class="resolution-title"
-          v-for="(script, index) in filterScripts(true, false)"
+          v-for="(script, index) in filterScripts('player', true, false)"
           :key="index"
         >
           <input type="radio" v-model="selectedResolution" :value="script" />
@@ -67,7 +67,7 @@
       <button
         v-if="selectedResolution"
         class="modal-footer-button"
-        @click="initResolution"
+        @click="closeModalWindow"
       >
         Внести
       </button>
@@ -86,7 +86,7 @@
     <template #content>
       <div class="russia-vote center">
         <p>Повестка голосования:</p>
-        <h3>{{ selectedResolution.optionName }}</h3>
+        <h3>{{ currentResolution.optionName }}</h3>
         <div class="russia-vote-options">
           <label>
             <input type="radio" v-model="russiaVote" :value="1" />
@@ -103,14 +103,14 @@
       <button
         v-if="russiaVote == 0"
         class="modal-footer-button"
-        @click="voteForRussia(russiaVote)"
+        @click="voteForRussia(russiaVote, currentResolution)"
       >
         Воздержаться
       </button>
       <button
         v-else
         class="modal-footer-button"
-        @click="voteForRussia(russiaVote)"
+        @click="voteForRussia(russiaVote, currentResolution)"
       >
         Проголосовать
       </button>
@@ -131,8 +131,8 @@
       <h2>Итоги голосования в ООН</h2>
     </template>
     <template #footer>
-      <button v-if="currentStage == 10" @click="finalResults()">Закрыть</button>
-      <button v-else @click="closeModalWindow">Закрыть</button>
+      <button v-if="currentStage == 9" @click="finalResults()">Закрыть</button>
+      <button v-else @click="nextStage">Закрыть</button>
     </template>
   </modal>
 
@@ -264,6 +264,7 @@ export default {
       isFinalResults: false,
       isResolutionVisible: false,
       selectedResolution: null,
+      antiResolution: null,
 
       isRussiaVote: false,
       russiaVote: 0,
@@ -278,7 +279,7 @@ export default {
         imageTitle: false,
         title: "",
         body: "",
-        button: "",
+        button: "Закрыть",
       },
     };
   },
@@ -292,7 +293,6 @@ export default {
     openRules() {
       this.modalObject.title = "Правила игры";
       this.modalObject.body = GameData.rules;
-      this.modalObject.button = "Закрыть";
       this.isModalVisible = true;
     },
     openStatDialog(e) {
@@ -323,16 +323,20 @@ export default {
         relationsLauncher.createAllRelations()
       );
     },
-    endStage() {
+    nextStage() {
+      this.isVoteResults = false;
       this.removeNotifications();
-      if (this.currentStage % 3 == 0) {
-        if (this.selectedResolution) {
-          this.calcAttitude();
-          this.isRussiaVote = true;
-        }
-      }
       this.$refs.map.clearActions();
       this.currentStage++;
+    },
+    endStage() {
+      if (this.currentStage % 3 == 0 && this.selectedResolution) {
+        this.initResolution(this.selectedResolution);
+      } else if ((this.currentStage - 1) % 3 == 0 && this.antiResolution) {
+        this.initResolution(this.antiResolution);
+      } else {
+        this.nextStage();
+      }
     },
     finalResults() {
       this.isVoteResults = false;
@@ -349,20 +353,25 @@ export default {
       this.isFinalResults = false;
       this.isIntro = true;
     },
-    filterScripts(active, passed) {
+    filterScripts(type, active, passed) {
       return this.Scripts.filter((script) => {
         if (script.title == "nuclear") {
-          const nuclearStates = this.Countries.filter((state) =>
-            ["CN", "FR", "GB", "US"].includes(state.id)
-          );
-          script.active = nuclearStates.every((nuclear) =>
-            nuclear.hasRelation("nuclear")
-          );
+          script.active = this.Countries.filter((state) =>
+            script.nuclearStates.includes(state.id)
+          ).every((nuclear) => nuclear.hasRelation("nuclear"));
         }
-        return script.active == active && script.passed == passed;
+        return (
+          script.type == type &&
+          script.active == active &&
+          script.passed == passed
+        );
       });
     },
-    calcAttitude(resolution = this.selectedResolution) {
+    initResolution(resolution) {
+      this.calcAttitude(resolution);
+      this.isRussiaVote = true;
+    },
+    calcAttitude(resolution) {
       this.Countries.forEach((country) =>
         country.setActualScriptAtt(
           resolution.title,
@@ -370,19 +379,21 @@ export default {
         )
       );
     },
-    initResolution() {
-      this.calcAttitude();
-      this.isResolutionVisible = false;
-    },
-    voteForRussia(vote) {
+    voteForRussia(vote, resolution) {
       let rus = this.Countries.find((country) => country.id == "RU");
-      rus.setActualScriptAtt(this.selectedResolution.title, vote);
+      rus.setActualScriptAtt(resolution.title, vote);
       this.russiaVote = 0;
       this.isRussiaVote = false;
-      this.vote();
-      this.selectedResolution = null;
+      this.vote(resolution);
+      this.russiaVote = 0;
+      if (this.selectedResolution == resolution) {
+        this.selectedResolution = null;
+      }
+      if (this.antiResolution == resolution) {
+        this.antiResolution = null;
+      }
     },
-    vote(resolution = this.selectedResolution) {
+    vote(resolution) {
       this.Votes.push(new Vote(this.Countries, resolution));
       const voteData = this.Votes.slice(-1)[0];
       let result = "";
@@ -408,7 +419,6 @@ export default {
     },
     launchEvents(qty) {
       this.Events.filter((eItem) => eItem.active == false)
-        // .sort(() => 0.5 - Math.random())
         .shuffle()
         .slice(0, qty)
         .forEach((filteredE) => {
@@ -440,10 +450,34 @@ export default {
       }
     },
   },
+  computed: {
+    currentResolution() {
+      return this.selectedResolution == null
+        ? this.antiResolution
+        : this.selectedResolution;
+    },
+  },
   watch: {
     currentStage(stage) {
       if ((stage + 1) % 3 == 0) {
-        this.isResolutionVisible = true;
+        // Introduce Player`s resolution
+        let vm = this;
+        setTimeout(() => {
+          vm.isResolutionVisible = true;
+        }, 1000);
+      }
+      if (stage % 3 == 0 && stage != 9) {
+        // Introduce AI resolution
+        this.antiResolution = this.filterScripts("anti", true, false)
+          .shuffle()
+          .splice(0, 1)[0];
+        if (this.antiResolution) {
+          this.modalObject.title =
+            "На голосование ООН была предложена резолюция.";
+          this.modalObject.imageTitle = true;
+          this.modalObject.body = `<div style="text-align: center"><h3>${this.antiResolution.optionName}</h3><p>Голосование пройдет через два хода.</p></div>`;
+          this.isModalVisible = true;
+        }
       }
       this.launchEvents(4);
     },

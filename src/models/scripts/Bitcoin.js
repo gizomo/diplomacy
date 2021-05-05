@@ -4,6 +4,7 @@ export default class Bitcoin {
     this.description = "";
     this.optionName =
       "Принять Bitcoin в качестве международной резервной валюты";
+    this.type = "player";
     this.active = true;
     this.passed = false;
     this.btcPrice = 0;

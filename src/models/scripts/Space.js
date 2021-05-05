@@ -3,6 +3,7 @@ export default class Space {
     this.title = "space";
     this.description = "";
     this.optionName = "Запрет на конкуренцию в космосе";
+    this.type = "player";
     this.active = true;
     this.passed = false;
   }

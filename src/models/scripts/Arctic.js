@@ -4,7 +4,8 @@ export default class Arctic {
     this.description = "";
     this.optionName =
       "Закрепить международной статус внешельфовой зоны в Арктике";
-    this.active = false;
+    this.type = "anti";
+    this.active = true;
     this.passed = false;
   }
 

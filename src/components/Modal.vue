@@ -70,6 +70,11 @@ export default {
 </script>
 
 <style scoped>
+.flag {
+  display: block;
+  width: 9rem;
+  margin: 0 auto;
+}
 .modal-wrapper {
   display: flex;
   align-items: center;
