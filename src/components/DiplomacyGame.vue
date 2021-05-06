@@ -402,15 +402,21 @@ export default {
       const voteData = this.Votes.slice(-1)[0];
       let result = "";
       if (voteData.result) {
-        resolution.passed = true;
-        const scriptIndex = this.Scripts.findIndex(
-          (script) => script.title === resolution.title
-        );
-        this.Scripts.splice(scriptIndex, 1, resolution);
+        this.Scripts.find(
+          (script) => script.title == resolution.title
+        ).passed = true;
+        // resolution.passed = true;
+        // const scriptIndex = this.Scripts.findIndex(
+        //   (script) => script.title === resolution.title
+        // );
+        // this.Scripts.splice(scriptIndex, 1, resolution);
         result = "<p class='ayes'>Резолюция принята</p>";
       } else {
         result = "<p class='nays'>Резолюция не принята</p>";
       }
+      this.Countries.forEach((country) =>
+        country.removeActualScriptAtt(resolution.title)
+      );
       let voteResults = `<h3>${voteData.resolution}</h3>
       <div class="votes">
       <p><span class="ayes">За:</span> ${voteData.ayes.length}</p>

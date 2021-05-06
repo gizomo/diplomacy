@@ -62,4 +62,10 @@ export default class Country {
       });
     }
   }
+  removeActualScriptAtt(scriptName) {
+    const attIndex = this.actualScriptsAtt.findIndex(
+      (attitude) => attitude.name == scriptName
+    );
+    this.actualScriptsAtt.splice(attIndex, 1);
+  }
 }

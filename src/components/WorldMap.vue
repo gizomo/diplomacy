@@ -244,7 +244,6 @@ export default {
       const origAtts = this.filteredAttitude().map((att) => {
         return Object.assign({}, att);
       });
-      console.log(origAtts);
       this.selectedCountry["origScriptsAtt"] = [...origAtts];
     },
     filteredAttitude() {
@@ -271,7 +270,6 @@ export default {
         let one = origAttitudes.find((oAtt) => nAtt.name == oAtt.name);
         return Math.abs(nAtt.value - one.value);
       });
-      console.log(adsResults);
       this.cyberInfluence.value = 10 - adsResults.reduce((a, b) => a + b);
       if (this.cyberInfluence.value < 0) {
         n = n * -1;
@@ -282,14 +280,22 @@ export default {
   },
   computed: {
     countryHacked() {
-      return this.cyberAtacks.some(
-        (atack) => atack.country == this.selectedCountry.id
-      );
+      if (this.selectedCountry) {
+        return this.cyberAtacks.some(
+          (atack) => atack.country == this.selectedCountry.id
+        );
+      } else {
+        return false;
+      }
     },
     cyberInfluence() {
-      return this.cyberAtacks.find(
-        (atack) => atack.country == this.selectedCountry.id
-      );
+      if (this.selectedCountry) {
+        return this.cyberAtacks.find(
+          (atack) => atack.country == this.selectedCountry.id
+        );
+      } else {
+        return undefined;
+      }
     },
   },
 };
