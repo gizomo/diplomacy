@@ -4,12 +4,6 @@
       <div class="modal-header">
         <div class="modal-title">
           <slot name="header">
-            <img
-              v-if="modalContent.imageTitle"
-              class="flag"
-              :src="require('../../public/images/flags/UN.svg')"
-              alt="ООН"
-            />
             <h2>{{ modalContent.title }}</h2>
           </slot>
         </div>
@@ -43,7 +37,6 @@ export default {
       type: Object,
       default() {
         return {
-          imageTitle: false,
           title: "Модальное окно",
           body: "",
           button: "Закрыть",

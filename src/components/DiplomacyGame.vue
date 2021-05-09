@@ -46,7 +46,7 @@
     <template #header>
       <img
         class="flag"
-        :src="require('../../public/images/flags/UN.svg')"
+        :src="require('/public/images/flags/UN.svg')"
         alt="ООН"
       />
       <h2>Внесите резолюцию на голосование в ООН</h2>
@@ -78,7 +78,7 @@
     <template #header>
       <img
         class="flag"
-        :src="require('../../public/images/flags/UN.svg')"
+        :src="require('/public/images/flags/UN.svg')"
         alt="ООН"
       />
       <h2>Голосование в ООН</h2>
@@ -125,7 +125,7 @@
     <template #header>
       <img
         class="flag"
-        :src="require('../../public/images/flags/UN.svg')"
+        :src="require('/public/images/flags/UN.svg')"
         alt="ООН"
       />
       <h2>Итоги голосования в ООН</h2>
@@ -143,11 +143,11 @@
     <template #content>
       <div class="sourses">
         <div class="spy-stat center">
-          <img :src="require('../../public/images/spy.svg')" />
+          <img :src="require('/public/images/spy.svg')" />
           <p>Осталось шпионов: {{ spies }}</p>
         </div>
         <div class="hacker-stat center">
-          <img :src="require('../../public/images/hacker.svg')" />
+          <img :src="require('/public/images/hacker.svg')" />
           <p>Осталось кибер-атак: {{ hackers }}</p>
         </div>
       </div>
@@ -276,7 +276,6 @@ export default {
 
       isModalVisible: false,
       modalObject: {
-        imageTitle: false,
         title: "",
         body: "",
         button: "Закрыть",
@@ -405,11 +404,6 @@ export default {
         this.Scripts.find(
           (script) => script.title == resolution.title
         ).passed = true;
-        // resolution.passed = true;
-        // const scriptIndex = this.Scripts.findIndex(
-        //   (script) => script.title === resolution.title
-        // );
-        // this.Scripts.splice(scriptIndex, 1, resolution);
         result = "<p class='ayes'>Резолюция принята</p>";
       } else {
         result = "<p class='nays'>Резолюция не принята</p>";
@@ -428,18 +422,23 @@ export default {
       this.isVoteResults = true;
     },
     launchEvents(qty) {
+      let delay = 300;
+      const vm = this;
       this.Events.filter((eItem) => eItem.active == false)
         .shuffle()
         .slice(0, qty)
         .forEach((filteredE) => {
           filteredE.activateEvent(this.Relations, this.$refs.map.fillColor);
-          this.eventNotify(filteredE);
+          setTimeout(() => {
+            vm.eventNotify(filteredE.description);
+          }, delay);
+          delay += 300;
         });
     },
-    eventNotify(gameEvent) {
+    eventNotify(message, type = "info") {
       const notification = {
-        message: gameEvent.description,
-        type: "info",
+        message: message,
+        type: type,
         showIcon: true,
         dismiss: {
           manually: true,
@@ -484,11 +483,12 @@ export default {
         if (this.antiResolution) {
           this.antiResolution.active = true;
           this.calcAttitude(this.antiResolution);
-          this.modalObject.title =
-            "На голосование ООН была предложена резолюция.";
-          this.modalObject.imageTitle = true;
-          this.modalObject.body = `<div style="text-align: center"><h4>${this.antiResolution.optionName}</h4><p>Голосование пройдет через два хода.</p></div>`;
-          this.isModalVisible = true;
+          // this.modalObject.title =
+          //   "На голосование ООН была предложена резолюция.";
+          // this.modalObject.body = `<div style="text-align: center"><h4>${this.antiResolution.optionName}</h4><p>Голосование пройдет через два хода.</p></div>`;
+          // this.isModalVisible = true;
+          const message = `На голосование ООН была предложена резолюция "${this.antiResolution.optionName}". Голосование пройдет через два хода.`;
+          this.eventNotify(message, "warning");
         }
       }
       this.launchEvents(4);
