@@ -422,7 +422,7 @@ export default {
       this.isVoteResults = true;
     },
     launchEvents(qty) {
-      let delay = 300;
+      let delay = 0;
       const vm = this;
       this.Events.filter((eItem) => eItem.active == false)
         .shuffle()
@@ -491,7 +491,7 @@ export default {
           this.eventNotify(message, "warning");
         }
       }
-      this.launchEvents(4);
+      this.launchEvents(3);
     },
   },
 };

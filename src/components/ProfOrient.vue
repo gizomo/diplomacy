@@ -243,10 +243,10 @@ export default {
       this.isModalVisible = false;
     },
     openCheckBoxInfo(checkBoxObject) {
-      this.isModalVisible = true;
       this.modalObject.title = checkBoxObject.name;
       this.modalObject.body = checkBoxObject.description;
       this.modalObject.button = "Закрыть";
+      this.isModalVisible = true;
     },
     startOrient() {
       this.isInfo = false;
@@ -254,7 +254,11 @@ export default {
     },
     skillsSave() {
       if (this.selectedSkills.length == 0) {
-        alert("Вы не выбрали ни одного навыка");
+        this.modalObject.title = "Вы не выбрали ни одного навыка";
+        this.modalObject.body = "";
+        this.modalObject.button = "Закрыть";
+        this.isModalVisible = true;
+        // alert("Вы не выбрали ни одного навыка");
       } else {
         this.isSkill = false;
         this.isTrends = true;
@@ -262,7 +266,11 @@ export default {
     },
     trendsSave() {
       if (this.selectedTrends.length == 0) {
-        alert("Вы не выбрали ни одного тренда");
+        this.modalObject.title = "Вы не выбрали ни одного тренда";
+        this.modalObject.body = "";
+        this.modalObject.button = "Закрыть";
+        this.isModalVisible = true;
+        // alert("Вы не выбрали ни одного тренда");
       } else {
         this.isTrends = false;
         this.isProfessions = true;

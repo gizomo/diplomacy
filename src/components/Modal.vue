@@ -69,9 +69,9 @@ export default {
   margin: 0 auto;
 }
 .modal-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* display: flex;
+  justify-content: center; */
+  min-height: 100vh;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -82,10 +82,8 @@ export default {
   z-index: 199;
 }
 .modal {
-  position: absolute;
+  position: sticky;
   top: 2rem;
-  right: 0;
-  left: 0;
   margin: 0 auto;
   padding: 1rem 2rem;
   width: 50vw;
