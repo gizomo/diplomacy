@@ -39,6 +39,9 @@
     <button class="end-stage" v-if="currentStage <= stages" @click="endStage">
       Завершить ход
     </button>
+    <button v-if="currentStage == 10" @click="finalResults()">
+      Итоги игры
+    </button>
     <button class="end-game" @click="endGame">Выйти из игры</button>
   </div>
 
@@ -194,8 +197,29 @@
       <h2>Игра закончена</h2>
     </template>
     <template #content>
+      <h1 class="ayes center" v-if="victory">Победа!</h1>
+      <h1 class="abstainers center" v-else>Поражение</h1>
       <h3 class="center">Итоги голосований за резолюции ООН</h3>
-      <p v-for="(vote, index) in Votes" :key="index" class="vote-title">
+      <h4 v-if="filterVotes('player').length">
+        Резолюции, инициированные Россией:
+      </h4>
+      <p
+        v-for="(vote, index) in filterVotes('player')"
+        :key="index"
+        class="vote-title"
+      >
+        {{ vote.resolution }}
+        <span v-if="vote.result" :class="{ ayes: vote.result }"> Принята </span>
+        <span v-else class="nays">Не принята</span>
+      </p>
+      <h4 v-if="filterVotes('anti').length">
+        Резолюции, инициированные другими странами:
+      </h4>
+      <p
+        v-for="(vote, index) in filterVotes('anti')"
+        :key="index"
+        class="vote-title"
+      >
         {{ vote.resolution }}
         <span v-if="vote.result" :class="{ ayes: vote.result }"> Принята </span>
         <span v-else class="nays">Не принята</span>
@@ -421,6 +445,9 @@ export default {
       this.modalObject.body = voteResults;
       this.isVoteResults = true;
     },
+    filterVotes(type) {
+      return this.Votes.filter((vote) => vote.type == type);
+    },
     launchEvents(qty) {
       let delay = 0;
       const vm = this;
@@ -464,6 +491,15 @@ export default {
       return this.selectedResolution == null
         ? this.antiResolution
         : this.selectedResolution;
+    },
+    victory() {
+      const playerVotes = this.Votes.filter(
+        (vote) => vote.type == "player" && vote.result == true
+      );
+      const antiVotes = this.Votes.filter(
+        (vote) => vote.type == "anti" && vote.result == true
+      );
+      return playerVotes.length > antiVotes.length;
     },
   },
   watch: {

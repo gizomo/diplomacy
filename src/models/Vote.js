@@ -1,6 +1,7 @@
 export default class Vote {
   constructor(countries, script) {
     this.resolution = script.optionName;
+    this.type = script.type;
     this.ayes = [];
     this.nays = [];
     this.abstainers = [];
