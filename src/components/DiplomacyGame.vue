@@ -375,6 +375,8 @@ export default {
       this.Scripts = [];
       this.Events = [];
       this.Votes = [];
+      this.selectedResolution = null;
+      this.antiResolution = null;
       this.currentStage = 1;
       this.isFinalResults = false;
       this.isIntro = true;
