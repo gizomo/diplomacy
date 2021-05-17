@@ -1,6 +1,6 @@
 <template>
   <div class="game-intro window" v-if="isIntro">
-    <h1 class="game-title center">Я международник</h1>
+    <h1 class="game-title center">Я - международник</h1>
     <h2 class="game-subtitle center">
       Открой для себя особенности современной мировой политики
     </h2>
@@ -155,6 +155,13 @@
         </div>
       </div>
       <hr />
+      <h3 class="center">Отношения со странами мира</h3>
+      <div class="relations">
+        <span v-for="(relation, idx) in Relations" :key="idx">
+          {{ relation.statInfo }}: {{ relationsCount(relation.name) }}
+        </span>
+      </div>
+      <hr />
       <h3 class="center">Резолюции</h3>
       <ul class="vote-results" v-if="Votes.length">
         <li v-for="(vote, index) in Votes" :key="index">
@@ -199,6 +206,62 @@
     <template #content>
       <h1 class="ayes center" v-if="victory">Победа!</h1>
       <h1 class="abstainers center" v-else>Поражение</h1>
+      <p v-if="victory">
+        Вы молодец! Вам удалось защитить интересы России на мировой арене.
+      </p>
+      <p v-if="!victory">
+        Не растраивайтесь. Даже опытным дипломатам не всегда удается добиваться
+        намеченых целей с первого раза.
+      </p>
+      <p>
+        Если вы хотите стать настоящим международником, ван предстоит еще
+        многому научиться.
+      </p>
+      <p v-if="hackers < 2">
+        Старайтесь действовать менее прямолинейно. Чтобы разобраться во всем
+        разнообразии взаимосвязей мировой политики, необходимо мыслить системно.
+      </p>
+      <p
+        v-if="
+          spies < 2 ||
+          Scripts.find((script) => script.title == 'nuclear').active == false
+        "
+      >
+        Подробнее изучайте информацию о странах и следите за обстановкой в мире.
+      </p>
+      <p
+        v-if="
+          relationsCount('agression') > 5 || relationsCount('sanctions') > 7
+        "
+      >
+        Старайтесь действовать менее агрессивно в отношении других государств.
+        Критически относитесь к своим поступкам. Задумайтесь, к каким
+        последсвтиям могут привести излишне частые угрозы в отношении других
+        государств.
+      </p>
+      <p
+        v-if="
+          relationsCount('emergency') < 3 ||
+          relationsCount('epidemic') < 3 ||
+          relationsCount('military') < 1
+        "
+      >
+        Международные отношения - очень диманичная среда. Внимательно следите за
+        просиходящими событиями. Не оставайтесь в стороне - помогайте другим
+        странам в сложных ситуациях, если рассчитываете заручиться их поддержкой
+        в будущем.
+      </p>
+      <p v-if="relationsCount('borders') > 7 || relationsCount('dutes') > 7">
+        С осторожностью выбирайте своих союзников. Предоставление чрезмерных
+        преференций другим странам может свидетельствовать о вашей слабости. К
+        тому же умение расставлять приоритеты может существенно сэкономить ваши
+        ресурсы.
+      </p>
+      <p v-if="filterVotes('player').length == 0">
+        Очень жаль, что вы не попытались побороться за интересы своей страны на
+        международной арене. Может вам больше подходит внутриполитическая,
+        научная или общественная деятельность.
+      </p>
       <h3 class="center">Итоги голосований за резолюции ООН</h3>
       <h4 v-if="filterVotes('player').length">
         Резолюции, инициированные Россией:
@@ -448,6 +511,10 @@ export default {
     filterVotes(type) {
       return this.Votes.filter((vote) => vote.type == type);
     },
+    relationsCount(relation) {
+      return this.Countries.filter((country) => country.hasRelation(relation))
+        .length;
+    },
     launchEvents(qty) {
       let delay = 0;
       const vm = this;
@@ -571,6 +638,13 @@ export default {
 .sourses {
   display: flex;
   justify-content: space-around;
+}
+.relations {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  text-align: center;
 }
 .hacker-stat img,
 .spy-stat img {

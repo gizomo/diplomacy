@@ -2,6 +2,7 @@ export default class Weaponse {
   constructor() {
     this.name = "weaponse";
     this.title = "Заключить соглашение о поставках вооружений";
+    this.statInfo = "Поставки оружия в другие страны";
     this.score = 9;
     this.countries = [
       "AO",

@@ -3,6 +3,7 @@ export default class Modey {
     this.name = "money";
     this.title =
       "Заключить соглашение о ведении торговли в национальных валютах";
+    this.statInfo = "Ведется торговля в национальной валюте с другими странами";
     this.score = 1;
     this.countries = [];
   }

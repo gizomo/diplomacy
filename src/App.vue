@@ -20,10 +20,11 @@
       </div>
       <div class="game window">
         <div class="content">
-          <h1>Международник</h1>
+          <h1>Я - международник</h1>
           <p>
             Хочешь узнать, какой из тебя международник? Попробуй свои силы в
-            интерактивной игре "Я международник".
+            интерактивной игре о международных отношениях. Защити интересы
+            России на мировой арене.
           </p>
           <div class="buttons">
             <button @click="startGame">Играть</button>
@@ -144,7 +145,7 @@ button:hover {
 }
 .window {
   min-width: 20rem;
-  width: 50vw;
+  width: 60vw;
   margin: 0 auto;
   padding: 3rem;
   background-color: #fafcff;

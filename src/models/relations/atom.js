@@ -2,6 +2,7 @@ export default class Atom {
   constructor() {
     this.name = "atom";
     this.title = "Заключить соглашение о строительстве АЭС";
+    this.statInfo = "Строится АЭС в других странах";
     this.score = 5;
     this.countries = [
       "AE",

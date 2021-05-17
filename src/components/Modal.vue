@@ -69,15 +69,11 @@ export default {
   margin: 0 auto;
 }
 .modal-wrapper {
-  /* display: flex;
-  justify-content: center; */
-  min-height: 100vh;
+  min-height: 100%;
   position: absolute;
   top: 0;
-  bottom: 0;
   right: 0;
   left: 0;
-  height: 100%;
   background-color: rgba(64, 64, 64, 0.4);
   z-index: 199;
 }
