@@ -296,6 +296,9 @@ export default {
       }
     },
   },
+  beforeUnmount() {
+    this.svgContainer.remove("worldMap");
+  },
 };
 </script>
 

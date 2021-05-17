@@ -43,6 +43,9 @@
       Итоги игры
     </button>
     <button class="end-game" @click="endGame">Выйти из игры</button>
+    <button v-if="currentStage != 10" class="open-rules" @click="openRules">
+      Правила игры
+    </button>
   </div>
 
   <modal v-if="isResolutionVisible" @closeModal="closeModalWindow">
@@ -435,6 +438,8 @@ export default {
       this.Scripts = [];
       this.Events = [];
       this.Votes = [];
+      this.selectedResolution = null;
+      this.antiResolution = null;
       this.currentStage = 1;
       this.isFinalResults = false;
       this.isIntro = true;
@@ -611,6 +616,8 @@ export default {
   font-weight: 300;
 }
 .game-wrapper {
+  overflow: hidden;
+  border-radius: 0.5rem;
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem rgba(128, 128, 128, 0.5);
 }
 .stages {
