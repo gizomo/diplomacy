@@ -5,7 +5,7 @@ export default class Dollar {
     this.name = "dollar";
     this.description = "";
     this.suffix =
-      " отказались использовать доллар США при заключении междуанродных сделок.";
+      " отказались использовать доллар США при заключении международных сделок.";
     this.active = false;
     this.countries = [];
     this.excludedCountries = ["RU", "US"];
