@@ -217,8 +217,8 @@
         намеченых целей с первого раза.
       </p>
       <p>
-        Если вы хотите стать настоящим международником, ван предстоит еще
-        многому научиться.
+        Мы проанализировали ваши действия во время игры. Если хотите достичь
+        лучших результатов обратите внимание на наши рекомендации.
       </p>
       <p v-if="hackers < 2">
         Старайтесь действовать менее прямолинейно. Чтобы разобраться во всем
@@ -238,9 +238,8 @@
         "
       >
         Старайтесь действовать менее агрессивно в отношении других государств.
-        Критически относитесь к своим поступкам. Задумайтесь, к каким
-        последсвтиям могут привести излишне частые угрозы в отношении других
-        государств.
+        Критически относитесь к своим поступкам. Санкции или угрозы применения
+        силы могут спровоцировать другие страны к ответным действиям.
       </p>
       <p
         v-if="
@@ -249,10 +248,15 @@
           relationsCount('military') < 1
         "
       >
-        Международные отношения - очень диманичная среда. Внимательно следите за
-        просиходящими событиями. Не оставайтесь в стороне - помогайте другим
+        Международные отношения - очень динамичная среда. Внимательно следите за
+        происходящими событиями. Не оставайтесь в стороне - помогайте другим
         странам в сложных ситуациях, если рассчитываете заручиться их поддержкой
         в будущем.
+      </p>
+      <p v-if="relationsCount('space') < 3 || relationsCount('atom') < 3">
+        Старайтесь использовать весь потенциал своей страны, чтобы наладить
+        отношения с как можно большим количеством государств. Вам может
+        понадобиться их поддержка в будущем.
       </p>
       <p v-if="relationsCount('borders') > 7 || relationsCount('dutes') > 7">
         С осторожностью выбирайте своих союзников. Предоставление чрезмерных
@@ -451,6 +455,11 @@ export default {
             script.nuclearStates.includes(state.id)
           ).every((nuclear) => nuclear.hasRelation("nuclear"));
         }
+        if (script.title == "expulsion") {
+          script.active =
+            this.relationsCount("sanctions") > 5 &&
+            this.relationsCount("agression") > 5;
+        }
         return (
           script.type == type &&
           script.active == active &&
@@ -510,6 +519,10 @@ export default {
       <p><span class="abstainers">Воздержалось:</span> ${voteData.abstainers.length}</p>
       </div>
       ${result}`;
+      if (voteData.title == "expulsion" && voteData.result) {
+        voteResults +=
+          "<p style='text-align: center; color: firebrick'>Россия исключена из состава СБ ООН, поэтому вы больше не можете вносить резолюции на голосование в ООН.</p>";
+      }
       this.modalObject.body = voteResults;
       this.isVoteResults = true;
     },
@@ -564,6 +577,14 @@ export default {
         ? this.antiResolution
         : this.selectedResolution;
     },
+    resolutionBlock() {
+      const expulsion = this.Votes.find((vote) => vote.title == "expulsion");
+      if (expulsion) {
+        return expulsion.result;
+      } else {
+        return false;
+      }
+    },
     victory() {
       const playerVotes = this.Votes.filter(
         (vote) => vote.type == "player" && vote.result == true
@@ -576,7 +597,7 @@ export default {
   },
   watch: {
     currentStage(stage) {
-      if ((stage + 1) % 3 == 0) {
+      if ((stage + 1) % 3 == 0 && !this.resolutionBlock) {
         // Introduce Player`s resolution
         let vm = this;
         setTimeout(() => {
@@ -585,18 +606,26 @@ export default {
       }
       if (stage % 3 == 0 && stage != 9) {
         // Introduce AI resolution
-        this.antiResolution = this.filterScripts("anti", false, false)
-          .shuffle()
-          .splice(0, 1)[0];
+        const filteredAntiRes = this.filterScripts("anti", true, false);
+        if (filteredAntiRes.find((antiRes) => antiRes.title == "expulsion")) {
+          this.antiResolution = filteredAntiRes.find(
+            (antiRes) => antiRes.title == "expulsion"
+          );
+        } else {
+          this.antiResolution = filteredAntiRes.shuffle().splice(0, 1)[0];
+        }
         if (this.antiResolution) {
           this.antiResolution.active = true;
           this.calcAttitude(this.antiResolution);
-          // this.modalObject.title =
-          //   "На голосование ООН была предложена резолюция.";
-          // this.modalObject.body = `<div style="text-align: center"><h4>${this.antiResolution.optionName}</h4><p>Голосование пройдет через два хода.</p></div>`;
-          // this.isModalVisible = true;
-          const message = `На голосование ООН была предложена резолюция "${this.antiResolution.optionName}". Голосование пройдет через два хода.`;
-          this.eventNotify(message, "warning");
+          let message = "";
+          if (this.antiResolution.title == "expulsion") {
+            message =
+              "Члены Совета безопасности ООН предложили исключить Россию из своего состава в ответ на ее агрессивные действия в отношении ряда государств. Голосование пройдет через два хода.";
+            this.eventNotify(message, "alert");
+          } else {
+            message = `На голосование ООН была предложена резолюция "${this.antiResolution.optionName}". Голосование пройдет через два хода.`;
+            this.eventNotify(message, "warning");
+          }
         }
       }
       this.launchEvents(3);

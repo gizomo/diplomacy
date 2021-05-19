@@ -5,7 +5,7 @@ export default class Carbon {
     this.optionName =
       "Запрет производства и потребления углеводородных видов топлива";
     this.type = "anti";
-    this.active = false;
+    this.active = true;
     this.passed = false;
     this.emission = 0;
     this.getCO2Emission();
