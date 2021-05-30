@@ -12,7 +12,13 @@
         v-tooltip="'Внедрить шпиона (осталось: ' + spies + ')'"
         @click="sentSpy"
       >
-        <img :src="require('/public/images/spy.svg')" />
+        <svg-icon
+          :svgId="'spy'"
+          :size="[50, 50]"
+          :viewbox="[0, 0, 100, 100]"
+          :path="icons.spy"
+          :fill="'#000'"
+        />
       </button>
       <button
         class="hacker"
@@ -25,7 +31,13 @@
         v-tooltip="'Совершить кибер-атаку (осталось: ' + hackers + ')'"
         @click="cyberAtack"
       >
-        <img :src="require('/public/images/hacker.svg')" />
+        <svg-icon
+          :svgId="'hacker'"
+          :size="[50, 50]"
+          :viewbox="[0, 0, 100, 100]"
+          :path="icons.hacker"
+          :fill="'#000'"
+        />
       </button>
       <img
         class="flag"
@@ -73,10 +85,17 @@
       <hr />
       <div class="relations-list">
         <label
-          class="relation-title"
+          class="relation"
           v-for="(relation, index) in filteredRelations()"
           :key="index"
         >
+          <svg-icon
+            :svgId="'relation_' + index"
+            :size="[30, 30]"
+            :viewbox="[0, 0, 100, 100]"
+            :path="relation.icon"
+            :fill="iconFillColor(relation.score)"
+          />
           <input
             type="radio"
             v-model="selectedRelation"
@@ -104,11 +123,14 @@
 
 <script>
 import WorldMapData from "../assets/worldRussiaCrimeaLow";
+import GameData from "../assets/gameData";
+import SvgIcon from "./SvgIcon";
 import Modal from "./Modal";
 
 export default {
   name: "WorldMap",
   components: {
+    SvgIcon,
     Modal,
   },
   props: {
@@ -118,6 +140,8 @@ export default {
   emits: ["openStat"],
   data() {
     return {
+      icons: GameData.icons,
+
       svgContainer: null,
       hoverCountryColor: "",
 
@@ -189,7 +213,12 @@ export default {
         this.node.attributes["fill"].value = vm.hoverCountryColor;
       });
     },
-    fillColor(color, countries) {
+    iconFillColor(relation) {
+      if (relation > 0) return "#228b22";
+      if (relation == 0) return "#808080";
+      if (relation < 0) return "#b22222";
+    },
+    countryFillColor(color, countries) {
       this.svgContainer.each(function () {
         if (countries.includes(this.attr("mapId"))) {
           this.fill(color);
@@ -206,12 +235,16 @@ export default {
       return this.concludedRelations.includes(this.selectedCountry.id);
     },
     filteredRelations() {
-      return this.relations.filter((item) => {
-        if (this.selectedCountry.hasRelation(item.name)) {
-          return false;
-        }
-        return item.isAvailable(this.selectedCountry);
-      });
+      return this.relations
+        .filter((item) => {
+          if (this.selectedCountry.hasRelation(item.name)) {
+            return false;
+          }
+          return item.isAvailable(this.selectedCountry);
+        })
+        .sort((a, b) => {
+          return b.score - a.score;
+        });
     },
     initRelation() {
       if (!this.selectedCountry.hasRelation(this.selectedRelation.name)) {
@@ -318,7 +351,6 @@ export default {
   position: absolute;
   left: 1.5rem;
   top: 1.5rem;
-  width: 3rem;
   border: none;
   background-color: none;
   cursor: pointer;
@@ -359,16 +391,20 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.relation-title {
+.relation {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
 }
-.relation-title:hover {
+.relation:hover {
   background-color: #99fff1;
   box-shadow: 2px 2px 5px 2px rgba(22, 22, 22, 0.1);
   border-radius: 0.25rem;
   cursor: pointer;
+}
+.relation input {
+  display: none;
 }
 .relation-deny {
   color: firebrick;

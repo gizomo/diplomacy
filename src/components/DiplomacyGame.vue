@@ -149,20 +149,80 @@
     <template #content>
       <div class="sourses">
         <div class="spy-stat center">
-          <img :src="require('/public/images/spy.svg')" />
+          <svg-icon
+            :svgId="'spy'"
+            :size="[50, 50]"
+            :viewbox="[0, 0, 100, 100]"
+            :path="icons.spy"
+            :fill="'#000'"
+          />
           <p>Осталось шпионов: {{ spies }}</p>
         </div>
         <div class="hacker-stat center">
-          <img :src="require('/public/images/hacker.svg')" />
+          <svg-icon
+            :svgId="'hacker'"
+            :size="[50, 50]"
+            :viewbox="[0, 0, 100, 100]"
+            :path="icons.hacker"
+            :fill="'#000'"
+          />
           <p>Осталось кибер-атак: {{ hackers }}</p>
         </div>
       </div>
       <hr />
       <h3 class="center">Отношения со странами мира</h3>
-      <div class="relations">
-        <span v-for="(relation, idx) in Relations" :key="idx">
-          {{ relation.statInfo }}: {{ relationsCount(relation.name) }}
-        </span>
+      <div class="relations-list">
+        <div class="relations-positive">
+          <div
+            class="relation"
+            v-for="(relation, idx) in sortedRelations(1)"
+            :key="idx"
+          >
+            <svg-icon
+              :svgId="'positive_' + idx"
+              :size="[30, 30]"
+              :viewbox="[0, 0, 100, 100]"
+              :path="relation.icon"
+              :fill="$refs.map.iconFillColor(relation.score)"
+              v-tooltip="relation.statInfo"
+            />
+            <span>{{ relationsCount(relation.name) }}</span>
+          </div>
+        </div>
+        <div class="relations-neutral">
+          <div
+            class="relation"
+            v-for="(relation, idx) in sortedRelations(0)"
+            :key="idx"
+          >
+            <svg-icon
+              :svgId="'neutral_' + idx"
+              :size="[30, 30]"
+              :viewbox="[0, 0, 100, 100]"
+              :path="relation.icon"
+              :fill="$refs.map.iconFillColor(relation.score)"
+              v-tooltip="relation.statInfo"
+            />
+            <span>{{ relationsCount(relation.name) }}</span>
+          </div>
+        </div>
+        <div class="relations-negative">
+          <div
+            class="relation"
+            v-for="(relation, idx) in sortedRelations(-1)"
+            :key="idx"
+          >
+            <svg-icon
+              :svgId="'negative_' + idx"
+              :size="[30, 30]"
+              :viewbox="[0, 0, 100, 100]"
+              :path="relation.icon"
+              :fill="$refs.map.iconFillColor(relation.score)"
+              v-tooltip="relation.statInfo"
+            />
+            <span>{{ relationsCount(relation.name) }}</span>
+          </div>
+        </div>
       </div>
       <hr />
       <h3 class="center">Резолюции</h3>
@@ -323,6 +383,7 @@ Array.prototype.shuffle = function () {
 import { useNotificationStore } from "@dafcoe/vue-notification";
 import "@dafcoe/vue-notification/dist/vue-notification.css";
 import Modal from "./Modal";
+import SvgIcon from "./SvgIcon";
 import WorldMap from "./WorldMap";
 import GameData from "../assets/gameData";
 import WorldMapData from "../assets/worldRussiaCrimeaLow";
@@ -336,6 +397,7 @@ export default {
   name: "DiplomacyGame",
   components: {
     WorldMap,
+    SvgIcon,
     Modal,
   },
   emits: ["backToMenu"],
@@ -343,6 +405,7 @@ export default {
     return {
       isIntro: true,
       intro: GameData.intro,
+      icons: GameData.icons,
 
       Countries: [],
       Relations: [],
@@ -448,6 +511,14 @@ export default {
       this.isFinalResults = false;
       this.isIntro = true;
     },
+    sortedRelations(relationsType) {
+      if (relationsType > 0)
+        return this.Relations.filter((relation) => relation.score > 0);
+      if (relationsType == 0)
+        return this.Relations.filter((relation) => relation.score == 0);
+      if (relationsType < 0)
+        return this.Relations.filter((relation) => relation.score < 0);
+    },
     filterScripts(type, active, passed) {
       return this.Scripts.filter((script) => {
         if (script.title == "nuclear") {
@@ -540,7 +611,10 @@ export default {
         .shuffle()
         .slice(0, qty)
         .forEach((filteredE) => {
-          filteredE.activateEvent(this.Relations, this.$refs.map.fillColor);
+          filteredE.activateEvent(
+            this.Relations,
+            this.$refs.map.countryFillColor
+          );
           setTimeout(() => {
             vm.eventNotify(filteredE.description);
           }, delay);
@@ -675,16 +749,18 @@ export default {
   display: flex;
   justify-content: space-around;
 }
-.relations {
-  display: flex;
-  flex-direction: column;
+.relations-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
   gap: 0.5rem;
   font-size: 0.9rem;
-  text-align: center;
 }
-.hacker-stat img,
-.spy-stat img {
-  height: 3rem;
+.relation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem;
 }
 .center {
   text-align: center;
