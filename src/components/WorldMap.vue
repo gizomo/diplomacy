@@ -88,6 +88,7 @@
           class="relation"
           v-for="(relation, index) in filteredRelations()"
           :key="index"
+          :class="{ checked: relation == selectedRelation }"
         >
           <svg-icon
             :svgId="'relation_' + index"
@@ -396,15 +397,21 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
+  transform: all 0.5s ease-in-out;
 }
 .relation:hover {
-  background-color: #99fff1;
+  background-color: #00efd1;
   box-shadow: 2px 2px 5px 2px rgba(22, 22, 22, 0.1);
   border-radius: 0.25rem;
   cursor: pointer;
 }
 .relation input {
   display: none;
+}
+.checked {
+  background-color: #00fffd;
+  box-shadow: 2px 2px 5px 2px rgba(22, 22, 22, 0.1);
+  border-radius: 0.25rem;
 }
 .relation-deny {
   color: firebrick;
