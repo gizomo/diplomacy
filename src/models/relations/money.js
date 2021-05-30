@@ -12,8 +12,7 @@ export default class Modey {
 
   isAvailable(country) {
     return (
-      (country.attToRussia > 0 && country.attToRussia >= this.score) ||
-      this.countries.includes(country.id)
+      country.attToRussia >= this.score || this.countries.includes(country.id)
     );
   }
 }

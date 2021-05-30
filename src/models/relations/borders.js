@@ -9,6 +9,6 @@ export default class Borders {
   }
 
   isAvailable(country) {
-    return country.attToRussia > 0 && country.attToRussia >= this.score;
+    return country.attToRussia >= this.score;
   }
 }
