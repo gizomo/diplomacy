@@ -83,7 +83,7 @@
         </p>
       </div>
       <hr />
-      <div class="relations-list">
+      <div v-if="filteredRelations().length" class="relations-list">
         <label
           class="relation"
           v-for="(relation, index) in filteredRelations()"
@@ -106,6 +106,10 @@
           {{ relation.title }}
         </label>
       </div>
+      <p v-else class="relation-empty">
+        {{ selectedCountry.title }} не хочет вступать в диалог. Или вам больше
+        нечего предложить.
+      </p>
       <p class="relation-deny" v-if="relationsStatus(selectedCountry.id)">
         Нельзя выполнить более одного действия за ход с одной и той же страной.
       </p>
@@ -412,6 +416,9 @@ export default {
   background-color: #00fffd;
   box-shadow: 2px 2px 5px 2px rgba(22, 22, 22, 0.1);
   border-radius: 0.25rem;
+}
+.relation-empty {
+  text-align: center;
 }
 .relation-deny {
   color: firebrick;
