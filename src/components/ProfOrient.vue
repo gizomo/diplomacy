@@ -135,6 +135,7 @@
             :path="profSkill.d"
             :fill="'#0f46e1'"
             @tooltip="openCheckBoxInfo(profSkill)"
+            v-tooltip="profSkill.name"
           />
         </div>
         <div class="profession-trends">
@@ -148,6 +149,7 @@
             :path="profTrend.d"
             :fill="'#fff'"
             @tooltip="openCheckBoxInfo(profTrend)"
+            v-tooltip="profTrend.name"
           />
         </div>
         <div class="edu-programms">
@@ -336,7 +338,6 @@ export default {
 .profession {
   position: relative;
   width: 18rem;
-  overflow: hidden;
   background-color: #fafcff;
   border-radius: 1.5rem;
   box-shadow: 0px 25px 20px rgba(2, 100, 242, 0.2);
@@ -351,6 +352,8 @@ export default {
   min-height: 6rem;
   padding: 1rem;
   margin: 0;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
   background-color: #34338e;
 }
 .profession-title h3 {
@@ -388,6 +391,8 @@ export default {
   gap: 1.5rem;
   align-items: center;
   padding: 1.5rem;
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
   background-color: #34338e;
 }
 .edu-programms span {
