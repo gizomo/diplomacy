@@ -53,8 +53,14 @@ export default {
   mounted() {
     const vm = this;
     // document.body.style.overflow = "hidden";
-    document.addEventListener("click", function (item) {
-      if (item.target === vm.$refs["modal_wrapper"]) {
+    document.addEventListener("click", function (event) {
+      if (event.target === vm.$refs["modal_wrapper"]) {
+        vm.closeModal();
+      }
+    });
+
+    document.addEventListener("keyup", function (event) {
+      if (event.key === "Escape") {
         vm.closeModal();
       }
     });
